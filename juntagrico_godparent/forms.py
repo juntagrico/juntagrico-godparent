@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from juntagrico.config import Config
 from juntagrico.dao.activityareadao import ActivityAreaDao
 
-from juntagrico_godparent import customizable
+from juntagrico_godparent.util.customize import customizable
 from juntagrico_godparent.models import Godparent, Godchild
 
 
