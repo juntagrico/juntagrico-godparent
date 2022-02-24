@@ -68,7 +68,7 @@ def leave(request):
     return redirect('jgo:home')
 
 
-@permission_required('jgo.can_make_matches')
+@permission_required('juntagrico_godparent.can_make_matches')
 def match(request):
     render_dict = {'change_date_disabled': True}
     if request.method == 'POST':
@@ -84,7 +84,7 @@ def match(request):
                                         'jgo/match_maker.html', request)
 
 
-@permission_required('jgo.can_make_matches')
+@permission_required('juntagrico_godparent.can_make_matches')
 def unmatchable(request):
     render_dict = {'change_date_disabled': True}
     if request.method == 'POST' and request.POST.get('godparent') and request.POST.get('godchild'):
@@ -96,14 +96,14 @@ def unmatchable(request):
                                         'jgo/unmatchable.html', request)
 
 
-@permission_required('jgo.can_make_matches')
+@permission_required('juntagrico_godparent.can_make_matches')
 def matched(request, removed=False):
     render_dict = {'change_date_disabled': True, 'removed': removed}
     return subscription_management_list(get_matched(), render_dict,
                                         'jgo/matched.html', request)
 
 
-@permission_required('jgo.can_make_matches')
+@permission_required('juntagrico_godparent.can_make_matches')
 def unmatch(request, godchild_id):
     godchild = get_object_or_404(Godchild, id=godchild_id)
     godchild.godparent = None

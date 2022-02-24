@@ -1,6 +1,6 @@
 {% load jgo.config %}
 {% jgo_config show_menu as b_show_menu %}
-{% if b_show_menu or perms.jgo.can_make_matches %}
+{% if b_show_menu or perms.juntagrico_godparent.can_make_matches %}
     <li class="nav-item">
         <a class="nav-link {{ menu.jgo }}" href="{% url 'jgo:home' %}">Gotte &amp; Götti</a>
     </li>
