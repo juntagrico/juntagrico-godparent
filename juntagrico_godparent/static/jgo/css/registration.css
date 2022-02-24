@@ -1,0 +1,17 @@
+@media (min-width: 420px) {
+    #div_id_slots strong, #div_id_slots .custom-control {
+        width: 24%;
+        display: inline-block;
+    }
+}
+
+@media (min-width: 420px) and (max-width: 560px), (min-width: 768px) and (max-width: 991px) {
+    #div_id_slots .custom-control-label {
+        padding-top: .34375rem;
+        font-size: 0.8rem;
+    }
+
+    #div_id_slots .custom-control-label::before, #div_id_slots .custom-control-label::after {
+        left: -1.1rem;
+    }
+}

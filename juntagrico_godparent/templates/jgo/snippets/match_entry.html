@@ -1,0 +1,26 @@
+{% load i18n %}
+{{ subject.member }} <a href="{% url "contact-member" subject.member.id %}" class="far fa-envelope"></a>
+<a href="{% url subject.admin_change_url_name subject.id %}" class="fas fa-pen"></a>
+<br>
+<a href="mailto:{{ subject.member.email }}">{{ subject.member.email }}</a><br>
+{{ subject.member.mobile_phone|default:subject.member.phone }}<br>
+<div>{{ subject.languages }}</div>
+{% include "jgo/snippets/slot_grid.html" with slots=subject.slots %}
+<div>{% trans "Kinder:" %} {% if subject.children %}Ja{% else %}Nein/Egal{% endif %}</div>
+{% if subject.member.areas.count %}
+    {% trans "Tätigkeitsbereiche" %}:
+    <ul>
+        {% for area in subject.member.areas.all %}
+            <li>{{ area }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% if subject.talents %}
+    <div>{% trans "Interessen & Begabungen" %}: {{ subject.talents }}</div>
+{% endif %}
+{% if subject.other %}
+    <div>{% trans "Weitere Kriterien" %}: {{ subject.other }}</div>
+{% endif %}
+{% if subject.comments %}
+    <div>{% trans "Bemerkungen" %}: {{ subject.comments }}</div>
+{% endif %}

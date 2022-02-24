@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load juntagrico.config %}
+{% load jgo.utils %}
+<div class="row mb-3">
+    {% vocabulary "depot" as v_depot %}
+    <div class="col-md-3">
+        {{ v_depot }}
+    </div>
+    <div class="col-md-9">
+        <p>
+            {% blocktrans %}
+                Wenn möglich versuchen wir dich an ein Mitglied im gleichen {{ v_depot }} zu vermitteln.
+                Du bist aktuell in folgendem {{ v_depot }}:
+            {% endblocktrans %}
+            <br>
+            {% member_depot request.user.member as member_depot %}
+            <strong>{{ member_depot.name }}</strong>
+            {% member_subscription request.user.member as sub %}
+            {% if sub.primary_member == request.user.member %}
+                | <a href="{% url 'depot-change' sub.id %}">{% trans "ändern" %}</a>
+            {% else %}
+                {% blocktrans %}
+                    (Nur das Hauptmitglied kann das {{ v_depot }} ändern)
+                {% endblocktrans %}
+            {% endif %}
+        </p>
+   </div>
+</div>

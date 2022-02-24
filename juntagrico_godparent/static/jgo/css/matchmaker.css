@@ -1,0 +1,39 @@
+tr[class^="hide-"], tr[class*=" hide-"] {
+    display: none;
+}
+
+.slotgrid {
+    max-width: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid black;
+}
+
+.slotgrid div {
+    flex: 0 33%;
+    height: 8px;
+    font-size: 8px;
+    line-height: 8px;
+}
+
+.slotgrid div:nth-child(6n+4),
+.slotgrid div:nth-child(6n+5),
+.slotgrid div:nth-child(6n+6) {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+.slotgrid div.active {
+    background-color: rgb(102, 204, 102);
+}
+
+.slotgrid.with-matching div.active {
+    background-color: #ccc8b8;
+}
+
+.slotgrid div.matching {
+    background-color: rgb(102, 204, 102) !important;
+}
+
+ul {
+    margin-bottom: 0;
+}

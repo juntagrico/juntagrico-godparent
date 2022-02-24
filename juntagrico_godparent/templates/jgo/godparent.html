@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load juntagrico.config %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block page_title %}
+    {% if exists %}
+        <h3>Dein Gotte/Götti-Profil</h3>
+    {% else %}
+        <h3>Melde dich als Gotte oder Götti an</h3>
+    {% endif %}
+{% endblock %}
+{% block styles %}
+    {{ block.super }}
+    <link href="{% static 'jgo/css/registration.css' %}" rel="stylesheet"/>
+{% endblock %}
+{% block content %}
+    {% if exists %}
+        <div class="row mb-3">
+            <div class="col-md-12">
+                {% blocktrans %}
+                    Du bist als Gotte/Götti angemeldet.
+                {% endblocktrans %}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h4>
+                    {% trans "Von dir Betreut" %}
+                </h4>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                {% block godchildren %}
+                    {% for godchild in form.instance.godchild_set.all %}
+                        <strong>{{ godchild }}</strong>:
+                        <a href="mailto:{{ godchild.member.email }}">{{ godchild.member.email }}</a>,
+                        {{ godchild.member.mobile_phone|default:godchild.member.phone }}<br>
+                        {% trans "Gemeinsame Sprachen:" %} {{ godchild.matching_languages|default:'Keine' }}<br>
+                        {% trans "Gemeinsame Zeitfenster:" %} {{ godchild.matching_slots|default:'Keine' }}<br>
+                        <br>
+                    {% empty %}
+                        {% blocktrans %}
+                            Noch Niemand.<br>
+                            <br>
+                        {% endblocktrans %}
+                    {% endfor %}
+                {% endblock %}
+                {% block remaining_godchildren %}
+                    {% with form.instance.remaining_godchildren as rg %}
+                        {% if rg == 0 %}
+                            <a href="{% url "jgo:increment-max-godchildren" %}" class="btn btn-primary">
+                                {% trans "Ein weiteres Neumitglied betreuen" %}
+                            </a>
+                        {% elif rg == 1 %}
+                            {% trans "Wir vermitteln dich derzeit noch an ein Neumitglied." %}
+                        {% elif rg > 1 %}
+                            {% blocktrans %}
+                                Wir vermitteln dich derzeit noch an {{ rg }} Neumitglieder.<br>
+                                Dies kann einige Tage in Anspruch nehmen. Wir werden dich per E-Mail informieren.
+                            {% endblocktrans %}
+                        {% endif %}
+                    {% endwith %}
+                {% endblock %}
+            </div>
+        </div>
+    {% endif %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            {% block godparent_info %}
+                <h4>Informationen zur Patenschaft</h4>
+                <p>Als Gotti/Götti für eines der neuen Mitglieder der kommenden Saison erleichterst Du den
+                    frischen Gmüeslis den Einstieg bei {% config "organisation_name" %} indem Du ihnen als eine Art Vertrauensperson den
+                    Alltag bei {% config "organisation_name" %} und die Community zeigst, wie Du sie erlebst.</p>
+                <h5>Deine Aufgaben</h5>
+                <ul>
+                    <li>Du nimmst innerhalb von zwei Wochen mit dem neuen Mitglied Kontakt auf.</li>
+                    <li>Das neue Mitglied darf dich bei Fragen kontaktieren.</li>
+                    <li>Zu Beginn der Saison (April/Mai) leistet ihr gemeinsam einen Arbeitseinsatz, bzw. bei
+                        unterjährigem Einstieg innerhalb von 4 Wochen.</li>
+                    <li>Beim gemeinsamen Arbeitseinsatz zeigst du dem neuen Mitglied die Gärtnerei, machst
+                        es mit anderen Mitgliedern und Schlüsselpersonen vor Ort bekannt, beantwortest
+                        allfällige Fragen und vermittelst, was SoLaWi und die Genossenschaft für dich bedeutet.<br>
+                        Nutze dazu auch die <strong><a href="/t/patenschaft_checkliste">Checkliste</a></strong>.</li>
+                    <li>Bei Gelegenheit erkundest du die Interessen des neuen Mitglieds und lässt die Patenschaftsbetreuung
+                        mit Arbeits- und Projektgruppen vernetzen.</li>
+                </ul>
+                <h5>Das bringst du mit</h5>
+                <ul>
+                    <li>Du bist mindestens ein Jahr Mitglied bei {% config "organisation_name" %}.</li>
+                    <li>Du magst Menschen und gehst in einer interessierten und offene Haltung auf sie zu.</li>
+                    <li>Dir liegt der Zusammenhalt der Community von {% config "organisation_name" %} und der Solawi-Gedanke am Herzen.</li>
+                </ul>
+                <h5>Darauf darfst du dich freuen</h5>
+                <ul>
+                    <li>Du lernst über deine Projekt- und Arbeitsgruppe hinaus neue Mitglieder kennen, kommst
+                        ins Gespräch über neue Themen und leistest einen wichtigen Beitrag zum
+                        Zusammenhalt unserer Community.</li>
+                    <li>Du erhältst ein Böhnli.</li>
+                </ul>
+            </div>
+        </div>
+    {% endblock %}
+    {% if form.instance.remaining_godchildren > 0 %}
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h4>
+                    {% trans "Deine Kriterien" %}
+                </h4>
+                <p>
+                    {% block godparent_form_info %}
+                        {% blocktrans %}
+                            Bitte fülle untenstehende Kriterien aus, damit dir ein möglichst passendes Neumitglied vermittelt werden kann.
+                        {% endblocktrans %}
+                    {% endblock %}
+                </p>
+            </div>
+        </div>
+        {% include "jgo/snippets/depot_info.html" %}
+        {% crispy form %}
+        {% if exists and not form.instance.godchild_set.count %}
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <h4>
+                        {% trans "Austragen" %}
+                    </h4>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <a href="{% url 'jgo:leave' %}" class="btn btn-danger">
+                        {% trans "Ich will nicht mehr Gotti/Götti sein" %}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% load i18n %}
+{% if perms.jgo.can_make_matches %}
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#godparentman">
+            {% trans "Gotte/Götti Vermittlung" %}
+            <i class="fas fa-angle-right">
+            </i>
+        </a>
+        <div class="collapse" id="godparentman">
+            <ul class="nav flex-column subadmin-menu">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'jgo:match' %}">
+                        {% trans "Passend" %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'jgo:unmatchable' %}">
+                        {% trans "Nicht passend" %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'jgo:matched' %}">
+                        {% trans "Vermittelt" %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+{% endif %}

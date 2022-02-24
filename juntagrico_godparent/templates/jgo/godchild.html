@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load juntagrico.config %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block page_title %}
+    {% if exists %}
+        <h3>Dein Profil als Neumitglied</h3>
+    {% else %}
+        <h3>Melde dich als Neumitglied an</h3>
+    {% endif %}
+{% endblock %}
+{% block styles %}
+    {{ block.super }}
+    <link href="{% static 'jgo/css/registration.css' %}" rel="stylesheet"/>
+{% endblock %}
+{% block content %}
+    {% if exists %}
+        <div class="row mb-3">
+            <div class="col-md-12">
+                {% blocktrans %}
+                    Du bist als Neumitglied registriert.
+                {% endblocktrans %}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h4>
+                    {% trans "Deine Gotte oder dein Götti" %}
+                </h4>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                {% block godparent %}
+                    {% if form.instance.godparent %}
+                        {% with form.instance.godparent as godparent %}
+                            <strong>{{ godparent }}</strong>:
+                            <a href="mailto:{{ godparent.member.email }}">{{ godparent.member.email }}</a>,
+                            {{ godparent.member.mobile_phone|default:godparent.member.phone }}<br>
+                            {% trans "Gemeinsame Sprachen:" %} {{ form.instance.matching_languages|default:'Keine' }}<br>
+                            {% trans "Gemeinsame Zeitfenster:" %} {{ form.instance.matching_slots|default:'Keine' }}<br>
+                            <br>
+                        {% endwith %}
+                    {% else %}
+                        {% blocktrans %}
+                            Noch Niemand. Wir suchen derzeit eine passende Gotte oder einen passenden Götti für dich.
+                        {% endblocktrans %}
+                    {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+    {% endif %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            {% block godchild_info %}
+                <h4>Informationen zur Patenschaft</h4>
+                <p>Sobald du dich mit dem Formular unten als Neumitglied registriert hast, suchen wir für dich eine passende Gotte bzw. einen passenden Götti.
+                Dies kann einige Zeit in Anspruch nehmen. Sobald wir jemanden gefunden haben, melden wir uns bei dir.</p>
+            {% endblock %}
+        </div>
+    </div>
+    {% if not form.instance.godparent %}
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h4>
+                    {% trans "Deine Kriterien" %}
+                </h4>
+                <p>
+                    {% blocktrans %}
+                        Damit du mit einer Person vernetzt werden kannst, die möglichst gut zu dir und deinen
+                        Bedürfnissen passt, kannst du unten deine Wünsche angeben.<br>
+                        Die Patenschaftskoordination versucht diese nach Möglichkeit zu berücksichtigen.
+                    {% endblocktrans %}
+                </p>
+            </div>
+        </div>
+        {% include "jgo/snippets/depot_info.html" %}
+        {% crispy form %}
+        {% if exists %}
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <h4>
+                        {% trans "Austragen" %}
+                    </h4>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <a href="{% url 'jgo:leave' %}" class="btn btn-danger">
+                        {% trans "Suche nach Gotte/Götti zurückziehen" %}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "management_lists/man_list_base.html" %}
+{% load i18n %}
+{% load static %}
+{% load juntagrico.config %}
+{% block styles %}
+    {{ block.super }}
+    <link href="{% static 'jgo/css/matchmaker.css' %}" rel="stylesheet"/>
+{% endblock %}

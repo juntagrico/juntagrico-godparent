@@ -1,0 +1,100 @@
+{% extends "jgo/man_list_matcher.html" %}
+{% load i18n %}
+{% load static %}
+{% load juntagrico.config %}
+{% block page_title %}
+    <h3>
+        {% blocktrans %}Neumitglieder ohne passende*n Gotte & Götti{% endblocktrans %}
+    </h3>
+{% endblock %}
+{% block list %}
+    {% if form_result == "success" %}
+        <div class="alert alert-success">
+            {% trans "Neumitglied und Gotte/Götti wurden vermittelt." %}
+        </div>
+    {% endif %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">
+            {% trans "Vermitteln" %}
+        </button>
+        <div class="row">
+            <div class="col-md-6">
+                <table id="filter-table-godparents" class="list table" style="display: table;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="filter">
+                                Gotte/Götti
+                            </th>
+                            <th class="filter">
+                                Verbleibend
+                            </th>
+                            <th class="d-none">
+                                {% trans "E-Mail" %}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for godparent in management_list.godparents %}
+                            <tr class="godparent-{{ godparent.id }}">
+                                <td>
+                                    <input type="radio" id="{{ godparent.id }}"
+                                           name="godparent" value="{{ godparent.id }}">
+                                </td>
+                                <td>
+                                    {% include 'jgo/snippets/match_entry.html' with subject=godparent %}
+                                </td>
+                                <td>
+                                    {{ godparent.remaining_godchildren }}
+                                </td>
+                                <td class="email d-none">
+                                    {{ godparent.member.email }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table id="filter-table" class="list table" style="display: table;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="filter">
+                                Neumitglied
+                            </th>
+                            <th class="d-none">
+                                {% trans "E-Mail" %}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for godchild in management_list.godchildren %}
+                            <tr class="godchild-{{ godchild.id }}">
+                                <td>
+                                    <input type="radio" id="{{ godchild.id }}"
+                                           name="godchild" value="{{ godchild.id }}">
+                                </td>
+                                <td>
+                                    {% include 'jgo/snippets/match_entry.html' with subject=godchild %}
+                                </td>
+                                <td class="email d-none">
+                                    {{ godchild.member.email }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">
+            {% trans "Vermitteln" %}
+        </button>
+    </form>
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'jgo/js/initUnmatchable.js' %}">
+    </script>
+{% endblock %}

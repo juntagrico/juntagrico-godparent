@@ -1,0 +1,10 @@
+{% load jgo.utils %}
+<div class="slotgrid {% if matching_slots %}with-matching{% endif %}">
+    {% for option in slots.choices %}
+        <div class="{{ option }}
+            {% if option in slots %}active
+                {% if matching_slots and option in matching_slots %}matching{% endif %}
+            {% endif %}
+        ">{% ifchanged %}{% weekday_from_option option 2 %}{% endifchanged %}</div>
+    {% endfor %}
+</div>

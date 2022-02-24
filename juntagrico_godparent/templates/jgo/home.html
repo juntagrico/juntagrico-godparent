@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load juntagrico.config %}
+{% load jgo.config %}
+{% load i18n %}
+{% block page_title %}
+    <h3>Gotte &amp; Götti</h3>
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            {% config "organisation_name" as c_organization_name %}
+            {% jgo_config "contact" as c_contact %}
+            {% block introduction %}
+                {% blocktrans %}
+                    <p>
+                        Damit neue Mitglieder sich rasch bei {{ c_organization_name }} zuhause fühlen,
+                        betreiben wir als Genossenschaft ein Patenschaftssystem.
+                    </p>
+                    <p>
+                        Im Rahmen dieses Systems verabreden sich Mitglieder, die bereits mindestens
+                        ein Jahr dabei sind mit Neumitgliedern zu einem ersten gemeinsamen Arbeitseinsatz.
+                        Während diesem Einsatz beantworten sie Fragen und führen die Neumitglieder in den Alltag
+                        des solidarischen Landwirtschaftsbetriebs und in die Community ein.
+                    </p>
+                    <p>
+                        Unten hast du die Möglichkeit, dich als Gotte/Götti anzumelden bzw. eine
+                        Einführung als ein Neumitglied zu beantragen. Die Patenschaftskoordination
+                        (<a href="mailto:{{ c_contact }}">{{ c_contact }}</a>)
+                        wird dich dann mit einem möglichst passenden Pendant vernetzen,
+                        mit dem du dich zu einem ersten gemeinsamen Einsatz verabredet kannst.
+                    </p>
+                {% endblocktrans %}
+            {% endblock %}
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <a href="{% url 'jgo:godparent' %}" class="btn btn-primary">
+                <h4>{% trans "Ich möchte Gotti/Götti sein" %}</h4>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="{% url 'jgo:godchild' %}" class="btn btn-primary">
+                <h4>{% trans "Ich bin Neumitglieder und Suche Gotti/Götti" %}</h4>
+            </a>
+        </div>
+    </div>
+{% endblock %}

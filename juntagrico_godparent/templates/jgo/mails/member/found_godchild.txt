@@ -1,0 +1,15 @@
+{% extends "mails/email.txt" %}
+{% load i18n %}
+{% load juntagrico.config %}
+{% block content %}
+{% blocktrans with m=godparent.member.first_name %}Hallo {{ m }}{% endblocktrans %}
+
+{% trans "Danke, dass du dich als Gotte/Götti angemeldet hast. Wir haben ein passendes Neumitglied für dich gefunden!" %}
+{% blocktrans with gc=godchild.member %}Bitte kontaktiere {{ gc }} gleich.{% endblocktrans %}
+{% trans "Du findest ihre/seine Kontaktdaten und weitere Informationen hier:" %}
+{{ serverurl }}{% url "jgo:home" %}
+
+{% blocktrans trimmed %}
+Bis bald und liebe Grüsse {{ matcher }}
+{% endblocktrans %}
+{% endblock %}
