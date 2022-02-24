@@ -2,3 +2,4 @@
 git+http://github.com/juntagrico/juntagrico.git
 flake8
 coverage
+reportlab==3.6.6
