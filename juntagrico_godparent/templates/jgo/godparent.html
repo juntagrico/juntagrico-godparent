@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load juntagrico.config %}
+{% load jgo.config %}
 {% load i18n %}
 {% load static %}
 {% load crispy_forms_tags %}
@@ -17,33 +18,25 @@
 {% block content %}
     {% if exists %}
         <div class="row mb-3">
-            <div class="col-md-12">
-                {% blocktrans %}
-                    Du bist als Gotte/Götti angemeldet.
-                {% endblocktrans %}
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <h4>
-                    {% trans "Von dir Betreut" %}
-                </h4>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-12">
+            <div class="col-md-12 alert alert-success">
                 {% block godchildren %}
                     {% for godchild in form.instance.godchild_set.all %}
-                        <strong>{{ godchild }}</strong>:
-                        <a href="mailto:{{ godchild.member.email }}">{{ godchild.member.email }}</a>,
-                        {{ godchild.member.mobile_phone|default:godchild.member.phone }}<br>
-                        {% trans "Gemeinsame Sprachen:" %} {{ godchild.matching_languages|default:'Keine' }}<br>
-                        {% trans "Gemeinsame Zeitfenster:" %} {{ godchild.matching_slots|default:'Keine' }}<br>
-                        <br>
+                        {% if forloop.first %}
+                            <h4>{% trans "Von dir Betreut" %}</h4>
+                            <strong>Bitte melde dich innerhlab von zwei Wochen nach der
+                                Zuteilung durch die Patenschaftskoordination bei diesen Personen</strong>
+                        {% endif %}
+                        <p>
+                            <strong>{{ godchild }}</strong>:
+                            <a href="mailto:{{ godchild.member.email }}">{{ godchild.member.email }}</a>,
+                            {{ godchild.member.mobile_phone|default:godchild.member.phone }}<br>
+                            {% trans "Gemeinsame Sprachen:" %} {{ godchild.matching_languages|default:'Keine' }}<br>
+                            {% trans "Gemeinsame Zeitfenster:" %} {{ godchild.matching_slots|default:'Keine' }}<br>
+                        </p>
                     {% empty %}
+                        <h4>{% trans "Die Vermittlung läuft" %}</h4>
                         {% blocktrans %}
-                            Noch Niemand.<br>
-                            <br>
+                            <p>Danke für deine Anmeldung.</p>
                         {% endblocktrans %}
                     {% endfor %}
                 {% endblock %}
@@ -54,12 +47,14 @@
                                 {% trans "Ein weiteres Neumitglied betreuen" %}
                             </a>
                         {% elif rg == 1 %}
-                            {% trans "Wir vermitteln dich derzeit noch an ein Neumitglied." %}
+                            {% trans "Die Patenschaftsvermittlung sucht derzeit noch ein Neumitglied für dich." %}
                         {% elif rg > 1 %}
                             {% blocktrans %}
-                                Wir vermitteln dich derzeit noch an {{ rg }} Neumitglieder.<br>
-                                Dies kann einige Tage in Anspruch nehmen. Wir werden dich per E-Mail informieren.
+                                Die Patenschaftsvermittlung sucht derzeit noch {{ rg }} Neumitglieder für dich.
                             {% endblocktrans %}
+                        {% endif %}
+                        {% if rg > 0 %}
+                            <br>Dies kann einige Tage in Anspruch nehmen. Du wirst per E-Mail informiert.
                         {% endif %}
                     {% endwith %}
                 {% endblock %}
@@ -69,22 +64,23 @@
     <div class="row mb-3">
         <div class="col-md-12">
             {% block godparent_info %}
+                {% jgo_config "contact" as c_contact %}
                 <h4>Informationen zur Patenschaft</h4>
-                <p>Als Gotti/Götti für eines der neuen Mitglieder der kommenden Saison erleichterst Du den
-                    frischen Gmüeslis den Einstieg bei {% config "organisation_name" %} indem Du ihnen als eine Art Vertrauensperson den
-                    Alltag bei {% config "organisation_name" %} und die Community zeigst, wie Du sie erlebst.</p>
+                <p>Als Gotti/Götti bist du eine Art Vertrauensperson für ein dir zugeteiltes Neumitglied.
+                    Diesem erleichterst du den Start bei {% config "organisation_name" %}, indem du es in die Community
+                    und den Solawi-Alltag einführst und ihm bei Fragen zur Verfügung stehst.</p>
                 <h5>Deine Aufgaben</h5>
                 <ul>
-                    <li>Du nimmst innerhalb von zwei Wochen mit dem neuen Mitglied Kontakt auf.</li>
-                    <li>Das neue Mitglied darf dich bei Fragen kontaktieren.</li>
-                    <li>Zu Beginn der Saison (April/Mai) leistet ihr gemeinsam einen Arbeitseinsatz, bzw. bei
-                        unterjährigem Einstieg innerhalb von 4 Wochen.</li>
-                    <li>Beim gemeinsamen Arbeitseinsatz zeigst du dem neuen Mitglied die Gärtnerei, machst
-                        es mit anderen Mitgliedern und Schlüsselpersonen vor Ort bekannt, beantwortest
-                        allfällige Fragen und vermittelst, was SoLaWi und die Genossenschaft für dich bedeutet.<br>
-                        Nutze dazu auch die <strong><a href="/t/patenschaft_checkliste">Checkliste</a></strong>.</li>
-                    <li>Bei Gelegenheit erkundest du die Interessen des neuen Mitglieds und lässt die Patenschaftsbetreuung
-                        mit Arbeits- und Projektgruppen vernetzen.</li>
+                    <li>Du nimmst innerhalb von zwei Wochen nach der Zuteilung mit dem neuen Mitglied Kontakt auf.</li>
+                    <li>Zu Beginn der Saison leistet ihr gemeinsam einen Arbeitseinsatz.<br>
+                        Bei diesem Einsatz zeigst du dem neuen Mitglied die Gärtnerei, machst es mit anderen Mitgliedern und Schlüsselpersonen vor Ort bekannt,
+                        beantwortest allfällige Fragen und vermittelst, was solidarische Landwirtschaft (SoLaWi) und die Genossenschaft für dich bedeuten.<br>
+                        Dafür orientierst du dich an der
+                        <strong><a href="/t/patenschaft_checkliste" target="_blank">Checkliste</a></strong></li>
+                    <li>Du stehst dem Neumitglied weiterhin als vertrauensvolle Ansprechperson zur Verfügung (es darf dich kontaktieren).</li>
+                    <li>Bei Gelegenheit erkundest du seine Interessen und vernetzt es mit Mitgliedern mit
+                        ähnlichen Interessen oder passenden Arbeits- und Projektgruppen.
+                        Bei Bedarf kann dich die Patenschaftsbetreuung (<a href="mailto:{{ c_contact }}">{{ c_contact }}</a>) bei der Vernetzung unterstützen.</li>
                 </ul>
                 <h5>Das bringst du mit</h5>
                 <ul>
@@ -99,9 +95,9 @@
                         Zusammenhalt unserer Community.</li>
                     <li>Du erhältst ein Böhnli.</li>
                 </ul>
+                {% endblock %}
             </div>
         </div>
-    {% endblock %}
     {% if form.instance.remaining_godchildren > 0 %}
         <div class="row mb-3">
             <div class="col-md-12">

@@ -30,20 +30,28 @@
                         wird dich dann mit einem möglichst passenden Pendant vernetzen,
                         mit dem du dich zu einem ersten gemeinsamen Einsatz verabredet kannst.
                     </p>
+                    <p>
+                        Hast du Fragen oder Anregungen zum Patenschaftssystem? Dann melde dich bei
+                        <a href="mailto:{{ c_contact }}">{{ c_contact }}</a>.
+                    </p>
                 {% endblocktrans %}
             {% endblock %}
         </div>
     </div>
     <div class="row mb-3">
-        <div class="col-md-6">
-            <a href="{% url 'jgo:godparent' %}" class="btn btn-primary">
-                <h4>{% trans "Ich möchte Gotti/Götti sein" %}</h4>
-            </a>
-        </div>
-        <div class="col-md-6">
-            <a href="{% url 'jgo:godchild' %}" class="btn btn-primary">
-                <h4>{% trans "Ich bin Neumitglieder und Suche Gotti/Götti" %}</h4>
-            </a>
-        </div>
+        {% if request.user|can_be_godparent %}
+            <div class="col-md-6">
+                <a href="{% url 'jgo:godparent' %}" class="btn btn-primary">
+                    <h4>{% trans "Ich möchte Gotti/Götti für ein Neumitglied sein" %}</h4>
+                </a>
+            </div>
+        {% endif %}
+        {% if request.user|can_be_godchild %}
+            <div class="col-md-6">
+                <a href="{% url 'jgo:godchild' %}" class="btn btn-primary">
+                    <h4>{% trans "Ich bin Neumitglied und Suche Gotti/Götti" %}</h4>
+                </a>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

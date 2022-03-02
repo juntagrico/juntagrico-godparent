@@ -1,6 +1,8 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from django.forms import ModelForm, Form, BooleanField, ModelMultipleChoiceField, CheckboxSelectMultiple
+from django.forms import ModelForm, Form, BooleanField, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 from juntagrico.config import Config
 from juntagrico.dao.activityareadao import ActivityAreaDao
@@ -9,12 +11,25 @@ from juntagrico_godparent.util.customize import customizable
 from juntagrico_godparent.models import Godparent, Godchild
 
 
+def contact_admin_link(text):
+    return mark_safe(
+        escape(
+            text
+        ).format('<a href="mailto:{0}">{0}</a>'.format(Config.info_email()))
+    )
+
+
 @customizable
 class RegisterForm(Form):
     areas = ModelMultipleChoiceField(queryset=ActivityAreaDao.all_visible_areas_ordered(), widget=CheckboxSelectMultiple,
                                      label=_('Tätigkeitsbereiche'), required=False,
                                      help_text=_('Aktuell bist du in diesen Tätigkeitsbereichen eingetragen. '
-                                                 'Bitte prüfe ob dies noch stimmt.'))
+                                                 'Bitte prüfe ob dies noch stimmt.<br>'
+                                                 'Wenn du die Auswahl hier änderst, wirst du in die entsprechenden'
+                                                 'Tätigkeitsbereiche eingetragen.'))
+    email = CharField(label=_('E-Mail-Adresse'), disabled=True,
+                      help_text=contact_admin_link(_('Überprüfe deine E-Mail-Adresse. Kontaktiere {} um sie zu ändern.')))
+    phone = CharField(label=_('Telefonnummer'), help_text='Überprüfe deine Telefonnummer')
     accept_terms = BooleanField(label=_('Ich bin einverstanden, dass meine E-Mail-Adresse und Telefonnummer '
                                         'dem vermittelten Mitglied mitgeteilt werden.'))
 
@@ -33,7 +48,7 @@ class RegisterForm(Form):
 class GodparentForm(RegisterForm, ModelForm):
     class Meta:
         model = Godparent
-        fields = ('max_godchildren', 'languages', 'slots', 'children', 'areas', 'other', 'comments')
+        fields = ('max_godchildren', 'languages', 'slots', 'children', 'areas', 'comments')
 
 
 @customizable
@@ -47,4 +62,4 @@ class GodchildForm(RegisterForm, ModelForm):
 
     class Meta:
         model = Godchild
-        fields = ('languages', 'slots', 'children', 'talents', 'areas', 'other', 'comments')
+        fields = ('languages', 'slots', 'children', 'talents', 'areas', 'comments')

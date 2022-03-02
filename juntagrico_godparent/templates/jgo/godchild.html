@@ -17,49 +17,44 @@
 {% block content %}
     {% if exists %}
         <div class="row mb-3">
-            <div class="col-md-12">
-                {% blocktrans %}
-                    Du bist als Neumitglied registriert.
-                {% endblocktrans %}
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <h4>
-                    {% trans "Deine Gotte oder dein Götti" %}
-                </h4>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-12">
+            <div class="col-md-12 alert alert-success">
                 {% block godparent %}
                     {% if form.instance.godparent %}
+                        <h4>{% trans "Deine Gotte oder dein Götti" %}</h4>
                         {% with form.instance.godparent as godparent %}
-                            <strong>{{ godparent }}</strong>:
-                            <a href="mailto:{{ godparent.member.email }}">{{ godparent.member.email }}</a>,
-                            {{ godparent.member.mobile_phone|default:godparent.member.phone }}<br>
-                            {% trans "Gemeinsame Sprachen:" %} {{ form.instance.matching_languages|default:'Keine' }}<br>
-                            {% trans "Gemeinsame Zeitfenster:" %} {{ form.instance.matching_slots|default:'Keine' }}<br>
-                            <br>
+                            <p>
+                                <strong>{{ godparent }}</strong>:
+                                <a href="mailto:{{ godparent.member.email }}">{{ godparent.member.email }}</a>,
+                                {{ godparent.member.mobile_phone|default:godparent.member.phone }}<br>
+                                {% trans "Gemeinsame Sprachen:" %} {{ form.instance.matching_languages|default:'Keine' }}<br>
+                                {% trans "Gemeinsame Zeitfenster:" %} {{ form.instance.matching_slots|default:'Keine' }}
+                            </p>
                         {% endwith %}
+                        <p>Diese Person wird sich demnächst bei dir melden.</p>
                     {% else %}
-                        {% blocktrans %}
-                            Noch Niemand. Wir suchen derzeit eine passende Gotte oder einen passenden Götti für dich.
-                        {% endblocktrans %}
+                        <h4>{% trans "Die Vermittlung läuft" %}</h4>
+                        <p>
+                            {% blocktrans %}
+                                Die Patenschaftskoordination sucht derzeit eine passende Gotte oder einen passenden Götti für dich.
+                                Dies kann einige Zeit in Anspruch nehmen. Du wirst per E-Mail informiert.
+                            {% endblocktrans %}
+                        </p>
                     {% endif %}
                 {% endblock %}
             </div>
         </div>
-    {% endif %}
-    <div class="row mb-3">
-        <div class="col-md-12">
-            {% block godchild_info %}
-                <h4>Informationen zur Patenschaft</h4>
-                <p>Sobald du dich mit dem Formular unten als Neumitglied registriert hast, suchen wir für dich eine passende Gotte bzw. einen passenden Götti.
-                Dies kann einige Zeit in Anspruch nehmen. Sobald wir jemanden gefunden haben, melden wir uns bei dir.</p>
-            {% endblock %}
+    {% else %}
+        <div class="row mb-3">
+            <div class="col-md-12">
+                {% block godchild_info %}
+                    <h4>Informationen zur Patenschaft</h4>
+                    <p>Sobald du dich mit dem Formular unten als Neumitglied registriert hast, sucht die Patenschaftskoordination
+                        für dich eine passende Gotte bzw. einen passenden Götti.<br>
+                        Dies kann einige Zeit in Anspruch nehmen. Du wirst per E-Mail informiert.</p>
+                {% endblock %}
+            </div>
         </div>
-    </div>
+    {% endif %}
     {% if not form.instance.godparent %}
         <div class="row mb-3">
             <div class="col-md-12">

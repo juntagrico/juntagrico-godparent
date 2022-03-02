@@ -19,36 +19,41 @@ def home(request):
     return render(request, "jgo/home.html")
 
 
-@login_required
-def godparent(request):
+def _registration(request, template, form_class, exists_function, instance_attr):
     member = request.user.member
-    exists = is_godparent(member)
-    initial = dict(areas=member.areas.values_list('id', flat=True))
+    exists = exists_function(member)
+    initial = dict(
+        areas=member.areas.values_list('id', flat=True),
+        email=member.email,
+        phone=member.mobile_phone or member.phone
+    )
     if request.method == 'POST' or exists:
-        form = GodparentForm(request.POST or None, instance=request.user.member.godparent if exists else None,
-                             editing=exists, initial=initial)
+        form = form_class(request.POST or None, instance=getattr(request.user.member, instance_attr) if exists else None,
+                          editing=exists, initial=initial)
         if request.method == 'POST' and form.is_valid():
-            form.instance.member = request.user.member
+            member = request.user.member
+            form.instance.member = member
             form.save()
-            # TODO: apply selected areas here.
+            if member.mobile_phone:
+                member.mobile_phone = form.cleaned_data['phone']
+            else:
+                member.phone = form.cleaned_data['phone']
+            member.save()
+            member.areas.set(form.cleaned_data['areas'])
             return redirect('jgo:home')
     else:
-        form = GodparentForm(initial=initial)
-    return render(request, "jgo/godparent.html", dict(form=form, exists=exists))
+        form = form_class(initial=initial)
+    return render(request, f"jgo/{template}.html", dict(form=form, exists=exists))
+
+
+@login_required
+def godparent(request):
+    return _registration(request, 'godparent', GodparentForm, is_godparent, 'godparent')
 
 
 @login_required
 def godchild(request):
-    exists = is_godchild(request.user.member)
-    if request.method == 'POST' or exists:
-        form = GodchildForm(request.POST or None, instance=request.user.member.godchild if exists else None, editing=exists)
-        if request.method == 'POST' and form.is_valid():
-            form.instance.member = request.user.member
-            form.save()
-            return redirect('jgo:home')
-    else:
-        form = GodchildForm()
-    return render(request, "jgo/godchild.html", dict(form=form, exists=exists))
+    return _registration(request, 'godchild', GodchildForm, is_godchild, 'godchild')
 
 
 @login_required

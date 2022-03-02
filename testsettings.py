@@ -1,5 +1,6 @@
 # test_settings.py
 import os
+from datetime import timedelta
 
 DEBUG = True
 
@@ -125,3 +126,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 GODPARENT_CONTACT = 'godparent@juntagrico.juntagrico'
 GODPARENT_SHOW_MENU = False
+GODPARENT_MEMBERSHIP_DURATION_LIMIT = timedelta(weeks=52)

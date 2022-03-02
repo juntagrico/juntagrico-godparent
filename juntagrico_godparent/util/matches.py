@@ -21,17 +21,23 @@ def available_godparents():
         number_of_godchildren__lt=F('max_godchildren'))
 
 
+def get_matches_dict(godparent, godchild):
+    godparent.depot = member_depot(godparent.member)
+    godchild.depot = member_depot(godchild.member)
+    return dict(
+        godparent=godparent,
+        godchild=godchild,
+        same_depot=godparent.depot == godchild.depot,
+        matching_areas=(godparent.member.areas.all() & godchild.member.areas.all()).count()
+    )
+
+
 def all_possible_matches():
     for godchild in Godchild.objects.filter(godparent__isnull=True):
         matches = []
         for godparent in available_godparents():
             if match(godparent, godchild):
-                matches.append(dict(
-                    godparent=godparent,
-                    godchild=godchild,
-                    same_depot=member_depot(godparent.member) == member_depot(godchild.member),
-                    matching_areas=(godparent.member.areas.all() & godchild.member.areas.all()).count()
-                ))
+                matches.append(get_matches_dict(godparent, godchild))
         godchild.num_options = len(matches)
         yield from matches
 
@@ -53,8 +59,4 @@ def all_unmatchable():
 
 def get_matched():
     for godchild in Godchild.objects.filter(godparent__isnull=False):
-        yield dict(
-            godparent=godchild.godparent,
-            godchild=godchild,
-            same_depot=member_depot(godchild.godparent.member) == member_depot(godchild.member)
-        )
+        yield get_matches_dict(godchild.godparent, godchild)

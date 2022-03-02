@@ -14,3 +14,9 @@ class GodparentConfig:
         if hasattr(settings, 'GODPARENT_SHOW_MENU'):
             return settings.GODPARENT_SHOW_MENU
         return True
+
+    @staticmethod
+    def godparent_membership_duration_limit():
+        if hasattr(settings, 'GODPARENT_MEMBERSHIP_DURATION_LIMIT'):
+            return settings.GODPARENT_MEMBERSHIP_DURATION_LIMIT
+        return None

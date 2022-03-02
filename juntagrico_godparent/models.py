@@ -45,10 +45,8 @@ class Criteria(models.Model):
                                      f'bei {Config.organisation_name()} mitbringe'),
                                    help_text=_('Für Neumitglieder mit Kindern hat sich eine Einführung '
                                                'durch ein Gotte/Götti mit Kindern bewährt.'))
-    other = models.TextField(_('Weitere Kriterien'), max_length=1000, default='', blank=True,
-                             help_text=_('Was sollten wir sonst noch beachten, bei der Vermittlung?'))
-    comments = models.TextField(_('Bemerkungen'), max_length=1000, default='', blank=True,
-                                help_text=_('Was möchtest du uns noch mitteilen?'))
+    comments = models.TextField(_('Bemerkungen und weitere Kriterien'), max_length=1000, default='', blank=True,
+                                help_text=_('Was möchtest du uns noch mitteilen? Was sollten wir sonst noch beachten, bei der Vermittlung?'))
 
     def clean(self):
         if hasattr(self, 'member') and is_godparent(self.member) and is_godchild(self.member):
