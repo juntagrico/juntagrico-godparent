@@ -58,7 +58,7 @@ class GodchildForm(RegisterForm, ModelForm):
         self.fields['children'].help_text = _(f'Falls du Kinder hast, die du zu den '
                                               f'Einsätzen bei {Config.organisation_name()} mitbringen möchtest, '
                                               f'hat sich eine Einführung durch ein Mitglied bewährt, das selbst Kinder hat.')
-        self.fields['children'].label = _('Gotti/Götti mit eigenen Kindern bevorzugen')
+        self.fields['children'].label = _('Gotte/Götti mit eigenen Kindern bevorzugen')
 
     class Meta:
         model = Godchild

@@ -95,6 +95,11 @@ class Godchild(Criteria):
             return MSFList(choices, set(self.slots).intersection(set(self.godparent.slots)))
         return set()
 
+    def matching_areas(self):
+        if self.godparent:
+            return set(self.member.areas.all()).intersection(set(self.godparent.member.areas.all()))
+        return set()
+
     class Meta:
         verbose_name = _('Neumitglied')
         verbose_name_plural = _('Neumitglieder')

@@ -23,8 +23,13 @@
                     {% for godchild in form.instance.godchild_set.all %}
                         {% if forloop.first %}
                             <h4>{% trans "Von dir Betreut" %}</h4>
-                            <strong>Bitte melde dich innerhlab von zwei Wochen nach der
-                                Zuteilung durch die Patenschaftskoordination bei diesen Personen</strong>
+                            <em>
+                            {% if forloop.revcounter > 1 %}
+                                {% trans "Bitte melde dich innerhalb von zwei Wochen nach der Zuteilung durch die Patenschaftskoordination bei diesen Personen." %}
+                            {% else %}
+                                {% trans "Bitte melde dich innerhalb von zwei Wochen nach der Zuteilung durch die Patenschaftskoordination bei dieser Person." %}
+                            {% endif %}
+                            </em>
                         {% endif %}
                         <p>
                             <strong>{{ godchild }}</strong>:
@@ -32,12 +37,17 @@
                             {{ godchild.member.mobile_phone|default:godchild.member.phone }}<br>
                             {% trans "Gemeinsame Sprachen:" %} {{ godchild.matching_languages|default:'Keine' }}<br>
                             {% trans "Gemeinsame Zeitfenster:" %} {{ godchild.matching_slots|default:'Keine' }}<br>
+                            {% trans "Gemeinsame Tätigkeitsbereiche:" %}
+                            {% for area in godchild.matching_areas %}
+                                {{ area.name }}{% if not forloop.last %},{% endif %}
+                            {% empty %}
+                                 {% trans "Keine" %}
+                            {% endfor %}
+                            <br>
                         </p>
                     {% empty %}
                         <h4>{% trans "Die Vermittlung läuft" %}</h4>
-                        {% blocktrans %}
-                            <p>Danke für deine Anmeldung.</p>
-                        {% endblocktrans %}
+                        <p>{% trans "Danke für deine Anmeldung." %}</p>
                     {% endfor %}
                 {% endblock %}
                 {% block remaining_godchildren %}
@@ -46,15 +56,19 @@
                             <a href="{% url "jgo:increment-max-godchildren" %}" class="btn btn-primary">
                                 {% trans "Ein weiteres Neumitglied betreuen" %}
                             </a>
-                        {% elif rg == 1 %}
-                            {% trans "Die Patenschaftsvermittlung sucht derzeit noch ein Neumitglied für dich." %}
-                        {% elif rg > 1 %}
-                            {% blocktrans %}
-                                Die Patenschaftsvermittlung sucht derzeit noch {{ rg }} Neumitglieder für dich.
-                            {% endblocktrans %}
-                        {% endif %}
-                        {% if rg > 0 %}
-                            <br>Dies kann einige Tage in Anspruch nehmen. Du wirst per E-Mail informiert.
+                        {% else %}
+                            {% if form.instance.godchild_set.exists %}
+                                <h4>{% trans "Die Vermittlung läuft weiter" %}</h4>
+                            {% endif %}
+                            {% if rg == 1 %}
+                                {% trans "Die Patenschaftsvermittlung prüft derzeit, ob sie noch ein passendes Neumitglied für dich findet." %}
+                            {% else %}
+                                {% blocktrans %}
+                                    Die Patenschaftsvermittlung prüft derzeit, ob sie noch {{ rg }} passende Neumitglieder für dich findet.
+                                {% endblocktrans %}
+                            {% endif %}
+                            <br>
+                            {% trans "Dies kann einige Tage in Anspruch nehmen. Du wirst per E-Mail informiert." %}
                         {% endif %}
                     {% endwith %}
                 {% endblock %}
@@ -66,7 +80,7 @@
             {% block godparent_info %}
                 {% jgo_config "contact" as c_contact %}
                 <h4>Informationen zur Patenschaft</h4>
-                <p>Als Gotti/Götti bist du eine Art Vertrauensperson für ein dir zugeteiltes Neumitglied.
+                <p>Als Gotte/Götti bist du eine Art Vertrauensperson für ein dir zugeteiltes Neumitglied.
                     Diesem erleichterst du den Start bei {% config "organisation_name" %}, indem du es in die Community
                     und den Solawi-Alltag einführst und ihm bei Fragen zur Verfügung stehst.</p>
                 <h5>Deine Aufgaben</h5>
@@ -126,7 +140,7 @@
             <div class="row mb-3">
                 <div class="col-md-12">
                     <a href="{% url 'jgo:leave' %}" class="btn btn-danger">
-                        {% trans "Ich will nicht mehr Gotti/Götti sein" %}
+                        {% trans "Ich will nicht mehr Gotte/Götti sein" %}
                     </a>
                 </div>
             </div>
