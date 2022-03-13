@@ -8,6 +8,7 @@ from multiselectfield import MultiSelectField
 from django.utils.translation import gettext as _
 from multiselectfield.db.fields import MSFList
 
+from juntagrico_godparent.querysets import GodchildQuerySet, GodparentQuerySet
 from juntagrico_godparent.util.utils import is_godparent, is_godchild
 
 
@@ -68,6 +69,8 @@ class Godparent(Criteria):
         help_text=_('Wie viele Neumitglieder könntest du betreuen?')
     )
 
+    objects = GodparentQuerySet.as_manager()
+
     def remaining_godchildren(self):
         return self.max_godchildren - self.godchild_set.count()
 
@@ -82,6 +85,8 @@ class Godchild(Criteria):
                                help_text=_('Hast du bestimmte Talente oder Fähigkeiten?'))
     godparent = models.ForeignKey(Godparent, verbose_name=_('Gotte/Götti'), on_delete=models.SET_NULL,
                                   null=True, blank=True)
+
+    objects = GodchildQuerySet.as_manager()
 
     def matching_languages(self):
         if self.godparent:

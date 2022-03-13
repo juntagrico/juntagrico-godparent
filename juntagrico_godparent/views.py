@@ -5,7 +5,7 @@ from juntagrico.util.views_admin import subscription_management_list
 from juntagrico_godparent.forms import GodparentForm, GodchildForm
 from juntagrico_godparent.mailer.membernotification import notify_matched_members
 
-from juntagrico_godparent.models import Godchild
+from juntagrico_godparent.models import Godchild, Godparent
 from juntagrico_godparent.util.matches import all_possible_matches, get_matched, all_unmatchable
 from juntagrico_godparent.util.utils import is_godparent, is_godchild
 
@@ -75,7 +75,11 @@ def leave(request):
 
 @permission_required('juntagrico_godparent.can_make_matches')
 def match(request):
-    render_dict = {'change_date_disabled': True}
+    render_dict = {
+        'change_date_disabled': True,
+        'available_godparents': Godparent.objects.available(),
+        'remaining_godchildren': Godchild.objects.matched(False).count()
+    }
     if request.method == 'POST':
         for name, value in request.POST.items():
             if name.startswith('match-') and value == 'on':

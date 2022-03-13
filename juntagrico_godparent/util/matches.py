@@ -16,11 +16,6 @@ def match(godparent, godchild):
     return set(godparent.languages) & set(godchild.languages) and set(godparent.slots) & set(godchild.slots)
 
 
-def available_godparents():
-    return Godparent.objects.annotate(number_of_godchildren=Count('godchild')).filter(
-        number_of_godchildren__lt=F('max_godchildren'))
-
-
 def get_matches_dict(godparent, godchild):
     godparent.depot = member_depot(godparent.member)
     godchild.depot = member_depot(godchild.member)
@@ -33,9 +28,9 @@ def get_matches_dict(godparent, godchild):
 
 
 def all_possible_matches():
-    for godchild in Godchild.objects.filter(godparent__isnull=True):
+    for godchild in Godchild.objects.matched(False):
         matches = []
-        for godparent in available_godparents():
+        for godparent in Godparent.objects.available():
             if match(godparent, godchild):
                 matches.append(get_matches_dict(godparent, godchild))
         godchild.num_options = len(matches)
@@ -43,8 +38,8 @@ def all_possible_matches():
 
 
 def all_unmatchable():
-    unmatched_godparents = available_godparents()
-    unmatched_godchildren = Godchild.objects.filter(godparent__isnull=True)
+    unmatched_godparents = Godparent.objects.available()
+    unmatched_godchildren = Godchild.objects.matched(False)
     matchable_godchildren = []
     for godchild in unmatched_godchildren:
         for godparent in unmatched_godparents:
@@ -58,5 +53,5 @@ def all_unmatchable():
 
 
 def get_matched():
-    for godchild in Godchild.objects.filter(godparent__isnull=False):
+    for godchild in Godchild.objects.matched():
         yield get_matches_dict(godchild.godparent, godchild)
