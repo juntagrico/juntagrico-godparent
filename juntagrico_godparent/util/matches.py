@@ -1,5 +1,3 @@
-from django.db.models import Count, F
-
 from juntagrico_godparent.models import Godchild, Godparent
 
 
