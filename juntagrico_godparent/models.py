@@ -49,6 +49,14 @@ class Criteria(models.Model):
     comments = models.TextField(_('Bemerkungen und weitere Kriterien'), max_length=1000, default='', blank=True,
                                 help_text=_('Was möchtest du uns noch mitteilen? Was sollten wir sonst noch beachten, bei der Vermittlung?'))
 
+    @property
+    def depot(self):
+        if self.member.subscription_future:
+            return self.member.subscription_future.future_depot or self.member.subscription_future.depot
+        elif self.member.subscription_current:
+            return self.member.subscription_current.future_depot or self.member.subscription_current.depot
+        return None
+
     def clean(self):
         if hasattr(self, 'member') and is_godparent(self.member) and is_godchild(self.member):
             raise ValidationError(_('Mitglied kann nicht Gotte/Götti und Neumtiglied gleichzeitig sein'))

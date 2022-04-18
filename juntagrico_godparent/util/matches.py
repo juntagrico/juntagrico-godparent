@@ -1,22 +1,12 @@
 from juntagrico_godparent.models import Godchild, Godparent
 
 
-def member_depot(member):
-    if member.subscription_future:
-        return member.subscription_future.future_depot or member.subscription_future.depot
-    elif member.subscription_current:
-        return member.subscription_current.future_depot or member.subscription_current.depot
-    return None
-
-
 def match(godparent, godchild):
     # TODO: add more conditions?
     return set(godparent.languages) & set(godchild.languages) and set(godparent.slots) & set(godchild.slots)
 
 
 def get_matches_dict(godparent, godchild):
-    godparent.depot = member_depot(godparent.member)
-    godchild.depot = member_depot(godchild.member)
     return dict(
         godparent=godparent,
         godchild=godchild,
