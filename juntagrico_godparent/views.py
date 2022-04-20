@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from juntagrico.util.views_admin import subscription_management_list
+from juntagrico.view_decorators import highlighted_menu
 
 from juntagrico_godparent.forms import GodparentForm, GodchildForm
 from juntagrico_godparent.mailer.membernotification import notify_matched_members
@@ -11,6 +12,7 @@ from juntagrico_godparent.util.utils import is_godparent, is_godchild
 
 
 @login_required
+@highlighted_menu('jgo')
 def home(request):
     if is_godparent(request.user.member):
         return godparent(request)
@@ -47,11 +49,13 @@ def _registration(request, template, form_class, exists_function, instance_attr)
 
 
 @login_required
+@highlighted_menu('jgo')
 def godparent(request):
     return _registration(request, 'godparent', GodparentForm, is_godparent, 'godparent')
 
 
 @login_required
+@highlighted_menu('jgo')
 def godchild(request):
     return _registration(request, 'godchild', GodchildForm, is_godchild, 'godchild')
 

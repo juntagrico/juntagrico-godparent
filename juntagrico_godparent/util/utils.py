@@ -4,3 +4,11 @@ def is_godparent(member):
 
 def is_godchild(member):
     return hasattr(member, 'godchild')
+
+
+def member_depot(member):
+    if member.subscription_future:
+        return member.subscription_future.future_depot or member.subscription_future.depot
+    elif member.subscription_current:
+        return member.subscription_current.future_depot or member.subscription_current.depot
+    return None

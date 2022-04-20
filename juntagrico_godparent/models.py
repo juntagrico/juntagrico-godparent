@@ -9,7 +9,7 @@ from django.utils.translation import gettext as _
 from multiselectfield.db.fields import MSFList
 
 from juntagrico_godparent.querysets import GodchildQuerySet, GodparentQuerySet
-from juntagrico_godparent.util.utils import is_godparent, is_godchild
+from juntagrico_godparent.util.utils import is_godparent, is_godchild, member_depot
 
 
 LANGUAGES = (('de', 'Deutsch'),
@@ -51,11 +51,7 @@ class Criteria(models.Model):
 
     @property
     def depot(self):
-        if self.member.subscription_future:
-            return self.member.subscription_future.future_depot or self.member.subscription_future.depot
-        elif self.member.subscription_current:
-            return self.member.subscription_current.future_depot or self.member.subscription_current.depot
-        return None
+        return member_depot(self.member)
 
     def clean(self):
         if hasattr(self, 'member') and is_godparent(self.member) and is_godchild(self.member):
