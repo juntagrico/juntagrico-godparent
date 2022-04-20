@@ -13,8 +13,7 @@
                 Du bist aktuell in folgendem {{ v_depot }}:
             {% endblocktrans %}
             <br>
-            {% member_depot request.user.member as member_depot %}
-            <strong>{{ member_depot.name }}</strong>
+            <strong>{{ request.user.member.depot.name }}</strong>
             {% member_subscription request.user.member as sub %}
             {% if sub.primary_member == request.user.member %}
                 | <a href="{% url 'depot-change' sub.id %}">{% trans "ändern" %}</a>

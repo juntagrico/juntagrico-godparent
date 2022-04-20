@@ -14,7 +14,8 @@ class GodparentQuerySet(QuerySet):
 
     def remaining_capacity(self):
         qs = self.annotate_number_of_godchildren()
-        return qs.aggregate(m=Sum('max_godchildren'))['m'] - self.aggregate(u=Sum('number_of_godchildren'))['u']
+        return (qs.aggregate(m=Sum('max_godchildren'))['m'] or 0) - \
+               (self.aggregate(u=Sum('number_of_godchildren'))['u'] or 0)
 
 
 class GodchildQuerySet(QuerySet):

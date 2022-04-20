@@ -1,14 +1,7 @@
 from django import template
 from juntagrico.util.temporal import weekdays
 
-from juntagrico_godparent.util import matches
-
 register = template.Library()
-
-
-@register.simple_tag
-def member_depot(member):
-    return matches.member_depot(member)
 
 
 @register.simple_tag
