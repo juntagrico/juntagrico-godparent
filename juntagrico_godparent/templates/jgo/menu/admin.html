@@ -6,21 +6,26 @@
             <i class="fas fa-angle-right">
             </i>
         </a>
-        <div class="collapse{% if request.resolver_match.app_name == 'jgo' and 'match' in request.resolver_match.url_name %} show{% endif %}" id="godparentman">
+        <div class="collapse{% if request.resolver_match.app_name == 'jgo' and 'manage' in request.resolver_match.url_name %} show{% endif %}" id="godparentman">
             <ul class="nav flex-column subadmin-menu">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'jgo:match' %}">
+                    <a class="nav-link" href="{% url 'jgo:manage-match' %}">
                         {% trans "Passend" %}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'jgo:unmatchable' %}">
+                    <a class="nav-link" href="{% url 'jgo:manage-unmatchable' %}">
                         {% trans "Nicht passend" %}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'jgo:matched' %}">
+                    <a class="nav-link" href="{% url 'jgo:manage-matched' %}">
                         {% trans "Vermittelt" %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'jgo:manage-completed' %}">
+                        {% trans "Abgeschlossen" %}
                     </a>
                 </li>
             </ul>

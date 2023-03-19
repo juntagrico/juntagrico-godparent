@@ -3,7 +3,11 @@ def is_godparent(member):
 
 
 def is_godchild(member):
-    return hasattr(member, 'godchild')
+    return hasattr(member, 'godchild') and member.godchild.progress is not member.godchild.DONE
+
+
+def was_godchild(member):
+    return hasattr(member, 'godchild') and member.godchild.progress is member.godchild.DONE
 
 
 def member_depot(member):

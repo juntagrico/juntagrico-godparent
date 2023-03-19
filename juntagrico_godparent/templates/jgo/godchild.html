@@ -21,16 +21,31 @@
                 {% block godparent %}
                     {% if form.instance.godparent %}
                         <h4>{% trans "Deine Gotte oder dein Götti" %}</h4>
-                        {% with form.instance.godparent as godparent %}
+                        {% with godparent=form.instance.godparent godchild=form.instance  %}
                             <p>
                                 <strong>{{ godparent }}</strong>:
                                 <a href="mailto:{{ godparent.member.email }}">{{ godparent.member.email }}</a>,
                                 {{ godparent.member.mobile_phone|default:godparent.member.phone }}<br>
-                                {% trans "Gemeinsame Sprachen:" %} {{ form.instance.matching_languages|default:'Keine' }}<br>
-                                {% trans "Gemeinsame Zeitfenster:" %} {{ form.instance.matching_slots|default:'Keine' }}
+                                {% trans "Gemeinsame Sprachen:" %} {{ godchild.matching_languages|default:'Keine' }}<br>
+                                {% trans "Gemeinsame Zeitfenster:" %} {{ godchild.matching_slots|default:'Keine' }}<br>
+                                {% trans "Status:" %} {{ godchild.get_progress_display }}<br>
+                                {% if godchild.progress == godchild.OPEN %}
+                                    <p>Diese Person wird sich demnächst bei dir melden.</p>
+                                    <a href="{% url "jgo:arranged" godchild.pk %}" class="btn btn-primary">
+                                        {% blocktrans %}
+                                            {{ godparent }} hat mich kontaktiert
+                                        {% endblocktrans %}
+                                    </a>
+                                {% elif godchild.progress == godchild.ARRANGED %}
+                                    <a href="{% url "jgo:done" godchild.pk %}" class="btn btn-warning"
+                                        onclick="return confirm('{% trans "Hiermit bestätigst du, dass diese Patenschaft wie abgemacht durchgeführt wurde." %}')">
+                                        {% blocktrans %}
+                                            Patenschaft mit {{ godparent }} abschliessen
+                                        {% endblocktrans %}
+                                    </a>
+                                {% endif %}
                             </p>
                         {% endwith %}
-                        <p>Diese Person wird sich demnächst bei dir melden.</p>
                     {% else %}
                         <h4>{% trans "Die Vermittlung läuft" %}</h4>
                         <p>
@@ -82,6 +97,9 @@
             </div>
             <div class="row mb-3">
                 <div class="col-md-12">
+                    <p>
+                        {% trans "Hierdurch werden deine Angaben oben gelöscht." %}
+                    </p>
                     <a href="{% url 'jgo:leave' %}" class="btn btn-danger">
                         {% trans "Suche nach Gotte/Götti zurückziehen" %}
                     </a>

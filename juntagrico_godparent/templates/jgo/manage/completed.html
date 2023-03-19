@@ -1,51 +1,43 @@
-{% extends "jgo/man_list_matcher.html" %}
+{% extends "jgo/manage/man_list_matcher.html" %}
 {% load i18n %}
 {% load juntagrico.config %}
 {% block page_title %}
     <h3>
-        {% blocktrans %}Vermittelte Gotte & Göttis{% endblocktrans %}
+        {% blocktrans %}Abgeschlossene Patenschaften{% endblocktrans %}
     </h3>
 {% endblock %}
 {% block list %}
     {% if removed %}
         <div class="alert alert-success">
-            {% trans "Neumitglied und Gotte/Götti wurden wieder getrennt." %}
+            {% trans "Patenschaft wurde gelöscht" %}
         </div>
     {% endif %}
     <table id="filter-table" class="list table" style="display: table;">
         <thead>
             <tr>
                 <th class="filter">
-                    Gotte/Götti
-                </th>
-                <th>
-                    Gleiches Depot
+                    {% trans "Gotte/Götti" %}
                 </th>
                 <th class="filter">
-                    Neumitglied
+                    {% trans "Neumitglied" %}
                 </th>
                 <th class="filter">
-                    Angemeldet am
+                    {% trans "Angemeldet am" %}
+                </th>
+                <th class="filter">
+                    {% trans "Notizen" %}
                 </th>
                 <th class="d-none">
                     {% trans "E-Mail" %}
                 </th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
-            {% for possible_match in management_list %}
-                {% with godparent=possible_match.godparent godchild=possible_match.godchild %}
+            {% for godchild in management_list %}
+                {% with godparent=godchild.godparent %}
                     <tr class="godparent-{{ godparent.id }} godchild-{{ godchild.id }}">
                         <td>
                             {% include 'jgo/snippets/match_entry.html' with subject=godparent matching_slots=godchild.slots %}
-                        </td>
-                        <td>
-                            {% if possible_match.same_depot %}
-                                {% trans "Ja" %}
-                            {% else %}
-                                {% trans "Nein" %}
-                            {% endif %}
                         </td>
                         <td>
                             {% include 'jgo/snippets/match_entry.html' with subject=godchild matching_slots=godparent.slots %}
@@ -53,13 +45,12 @@
                         <td>
                             {{ godchild.creation_date }}
                         </td>
+                        <td>
+                            {{ godchild.notes }}
+                            <a href="{% url godchild.admin_change_url_name godchild.id %}" class="fas fa-pen"></a>
+                        </td>
                         <td class="email d-none">
                             {{ godparent.member.email }},{{ godchild.member.email }}
-                        </td>
-                        <td>
-                            <a href="{% url 'jgo:unmatch' godchild.id %}" class="btn btn-danger">
-                                {% trans "Trennen" %}
-                            </a>
                         </td>
                     </tr>
                 {% endwith %}

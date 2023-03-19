@@ -1,10 +1,11 @@
-from django.db.models import QuerySet, Count, F, Sum
+from django.db.models import QuerySet, Count, F, Sum, Q
 
 
 class GodparentQuerySet(QuerySet):
     def annotate_number_of_godchildren(self):
+        from juntagrico_godparent.models import Godchild
         return self.annotate(
-            number_of_godchildren=Count('godchild')
+            number_of_godchildren=Count('godchild', filter=~Q(godchild__progress=Godchild.DONE))
         )
 
     def available(self):
@@ -20,4 +21,7 @@ class GodparentQuerySet(QuerySet):
 
 class GodchildQuerySet(QuerySet):
     def matched(self, f=True):
-        return self.filter(godparent__isnull=not f)
+        return self.filter(godparent__isnull=not f).exclude(progress=self.model.DONE)
+
+    def completed(self):
+        return self.filter(progress=self.model.DONE, godparent__isnull=False)

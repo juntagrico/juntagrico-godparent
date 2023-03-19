@@ -1,4 +1,4 @@
-{% extends "jgo/man_list_matcher.html" %}
+{% extends "jgo/manage/man_list_matcher.html" %}
 {% load i18n %}
 {% load static %}
 {% load juntagrico.config %}
@@ -25,10 +25,10 @@
                         <tr>
                             <th></th>
                             <th class="filter">
-                                Gotte/Götti
+                                {% trans "Gotte/Götti" %}
                             </th>
                             <th class="filter">
-                                Verbleibend
+                                {% trans "Verbleibend" %}
                             </th>
                             <th class="d-none">
                                 {% trans "E-Mail" %}
@@ -62,7 +62,10 @@
                         <tr>
                             <th></th>
                             <th class="filter">
-                                Neumitglied
+                                {% trans "Neumitglied" %}
+                            </th>
+                            <th class="filter">
+                                {% trans "Notizen" %}
                             </th>
                             <th class="d-none">
                                 {% trans "E-Mail" %}
@@ -78,6 +81,10 @@
                                 </td>
                                 <td>
                                     {% include 'jgo/snippets/match_entry.html' with subject=godchild %}
+                                </td>
+                                <td>
+                                    {{ godchild.notes }}
+                                    <a href="{% url godchild.admin_change_url_name godchild.id %}" class="fas fa-pen"></a>
                                 </td>
                                 <td class="email d-none">
                                     {{ godchild.member.email }}

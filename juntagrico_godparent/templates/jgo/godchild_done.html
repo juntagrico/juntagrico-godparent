@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load jgo.config %}
+{% load juntagrico.config %}
+{% load i18n %}
+{% load static %}
+{% block page_title %}
+    <h3>Patenschaft abgeschlossen</h3>
+{% endblock %}
+{% block content %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            {% config "organisation_name" as c_organization_name %}
+            {% jgo_config "contact" as c_contact %}
+            {% block godchild_done_info %}
+                <h4>Danke, dass du am Patenschaftsprogramm teilgenommen hast</h4>
+                <p>Wir hoffen du hattest dadurch einen besseren Start bei {{ c_organization_name }}.</p>
+                <p>
+                    Melde dich ungeniert bei der Patenschaftskoordination (<a href="mailto:{{ c_contact }}">{{ c_contact }}</a>),
+                    falls du Anmerkungen oder Verbesserungsvorschläge hast.
+                </p>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

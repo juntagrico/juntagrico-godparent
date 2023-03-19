@@ -69,14 +69,19 @@ class Criteria(models.Model):
 
 class Godparent(Criteria):
     max_godchildren = models.PositiveIntegerField(
-        _('Anzahl Neumitglieder'), validators=[MinValueValidator(1)], default=1,
+        _('Anzahl Neumitglieder'), default=1,
         help_text=_('Wie viele Neumitglieder könntest du betreuen?')
     )
 
     objects = GodparentQuerySet.as_manager()
 
     def remaining_godchildren(self):
-        return self.max_godchildren - self.godchild_set.count()
+        return self.max_godchildren - self.godchild_set.matched().count()
+
+    def save(self, *args, **kwargs):
+        # keep max godchildren consistent
+        self.max_godchildren = max(self.godchild_set.matched().count(), self.max_godchildren)
+        return super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('Gotte/Götti')
@@ -85,10 +90,23 @@ class Godparent(Criteria):
 
 
 class Godchild(Criteria):
+    OPEN = 0
+    ARRANGED = 1
+    DONE = 2
+    PROGRESS = [
+        (OPEN, _('Offen')),
+        (ARRANGED, _('Abgemacht')),
+        (DONE, _('Abgeschlossen')),
+    ]
+
     talents = models.TextField(_('Interessen & Begabungen'), max_length=1000, default='', blank=True,
                                help_text=_('Hast du bestimmte Talente oder Fähigkeiten?'))
     godparent = models.ForeignKey(Godparent, verbose_name=_('Gotte/Götti'), on_delete=models.SET_NULL,
                                   null=True, blank=True)
+    progress = models.IntegerField(default=0, choices=PROGRESS)
+    notes = models.TextField(
+        _('Notizen'), max_length=1000, blank=True,
+        help_text=_('Notizen für Administration. Nicht sichtbar für {}'.format(Config.vocabulary('member'))))
 
     objects = GodchildQuerySet.as_manager()
 
@@ -108,6 +126,12 @@ class Godchild(Criteria):
         if self.godparent:
             return set(self.member.areas.all()).intersection(set(self.godparent.member.areas.all()))
         return set()
+
+    def save(self, *args, **kwargs):
+        # keep progress consistent
+        if not self.godparent:
+            self.progress = self.OPEN
+        return super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('Neumitglied')

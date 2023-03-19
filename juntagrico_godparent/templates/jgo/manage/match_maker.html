@@ -1,4 +1,4 @@
-{% extends "jgo/man_list_matcher.html" %}
+{% extends "jgo/manage/man_list_matcher.html" %}
 {% load i18n %}
 {% load static %}
 {% load juntagrico.config %}
@@ -52,6 +52,9 @@
                     <th class="filter">
                         {% trans "Angemeldet am" %}
                     </th>
+                    <th class="filter">
+                        {% trans "Notizen" %}
+                    </th>
                     <th class="d-none">
                         {% trans "E-Mail" %}
                     </th>
@@ -89,6 +92,10 @@
                             </td>
                             <td>
                                 {{ godchild.creation_date }}
+                            </td>
+                            <td>
+                                {{ godchild.notes }}
+                                <a href="{% url godchild.admin_change_url_name godchild.id %}" class="fas fa-pen"></a>
                             </td>
                             <td class="email d-none">
                                 {{ godparent.member.email }},{{ godchild.member.email }}

@@ -7,16 +7,20 @@ from juntagrico_godparent.forms import GodparentForm, GodchildForm
 from juntagrico_godparent.mailer.membernotification import notify_matched_members
 
 from juntagrico_godparent.models import Godchild, Godparent
+from juntagrico_godparent.templatetags.jgo.config import can_be_godparent
 from juntagrico_godparent.util.matches import all_possible_matches, get_matched, all_unmatchable
-from juntagrico_godparent.util.utils import is_godparent, is_godchild
+from juntagrico_godparent.util.utils import is_godparent, is_godchild, was_godchild
 
 
 @login_required
 @highlighted_menu('jgo')
 def home(request):
-    if is_godparent(request.user.member):
+    member = request.user.member
+    if is_godparent(member):
         return godparent(request)
-    if is_godchild(request.user.member):
+    if was_godchild(member) and not can_be_godparent(request.user):
+        return godchild_done(request)
+    if is_godchild(member):
         return godchild(request)
     return render(request, "jgo/home.html")
 
@@ -61,6 +65,12 @@ def godchild(request):
 
 
 @login_required
+@highlighted_menu('jgo')
+def godchild_done(request):
+    return render(request, f"jgo/godchild_done.html")
+
+
+@login_required
 def increment_max_godchildren(request):
     if is_godparent(request.user.member):
         request.user.member.godparent.max_godchildren += 1
@@ -74,6 +84,32 @@ def leave(request):
         request.user.member.godparent.delete()
     elif is_godchild(request.user.member):
         request.user.member.godchild.delete()
+    return redirect('jgo:home')
+
+
+@login_required
+def arranged(request, godchild_id):
+    godchild = get_object_or_404(Godchild, id=godchild_id)
+    if godchild.progress == godchild.OPEN:
+        member = request.user.member
+        if member == godchild.member or member == godchild.godparent.member:
+            godchild.progress = godchild.ARRANGED
+            godchild.save()
+            # TODO: Send email
+    return redirect('jgo:home')
+
+
+@login_required
+def done(request, godchild_id):
+    godchild = get_object_or_404(Godchild, id=godchild_id)
+    if godchild.progress == godchild.ARRANGED:
+        member = request.user.member
+        if member == godchild.member or member == godchild.godparent.member:
+            godchild.progress = godchild.DONE
+            godchild.save()
+            godchild.godparent.max_godchildren -= 1
+            godchild.godparent.save()
+            # TODO: Send email
     return redirect('jgo:home')
 
 
@@ -94,7 +130,7 @@ def match(request):
                 notify_matched_members(godchild, request.user.member)
                 render_dict['form_result'] = 'success'
     return subscription_management_list(all_possible_matches(), render_dict,
-                                        'jgo/match_maker.html', request)
+                                        'jgo/manage/match_maker.html', request)
 
 
 @permission_required('juntagrico_godparent.can_make_matches')
@@ -106,14 +142,14 @@ def unmatchable(request):
         godchild.save()
         render_dict['form_result'] = 'success'
     return subscription_management_list(all_unmatchable(), render_dict,
-                                        'jgo/unmatchable.html', request)
+                                        'jgo/manage/unmatchable.html', request)
 
 
 @permission_required('juntagrico_godparent.can_make_matches')
 def matched(request, removed=False):
     render_dict = {'change_date_disabled': True, 'removed': removed}
     return subscription_management_list(get_matched(), render_dict,
-                                        'jgo/matched.html', request)
+                                        'jgo/manage/matched.html', request)
 
 
 @permission_required('juntagrico_godparent.can_make_matches')
@@ -121,4 +157,11 @@ def unmatch(request, godchild_id):
     godchild = get_object_or_404(Godchild, id=godchild_id)
     godchild.godparent = None
     godchild.save()
-    return redirect('jgo:matched-removed')
+    return redirect('jgo:manage-matched-removed')
+
+
+@permission_required('juntagrico_godparent.can_make_matches')
+def completed(request):
+    render_dict = {'change_date_disabled': True}
+    return subscription_management_list(Godchild.objects.completed(), render_dict,
+                                        'jgo/manage/completed.html', request)
