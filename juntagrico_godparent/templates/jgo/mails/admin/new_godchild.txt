@@ -1,0 +1,18 @@
+{% extends "mails/email.txt" %}
+{% load i18n %}
+{% load juntagrico.config %}
+{% block content %}
+{% trans "Hallo" %}
+{% if existed %}
+{% blocktrans with gc=godchild.member %}
+Soeben hat {{ gc }} das eigene Neumitglieder-Profil angepasst.
+{% endblocktrans %}
+{% else %}
+{% blocktrans with gc=godchild.member %}
+Soeben hat {{ gc }} sich als Neumitglied für das Patenschaftsprogramm angemeldet.
+{% endblocktrans %}
+{% endif %}
+
+{% blocktrans %}Liebe Grüsse und einen schönen Tag noch
+Dein Server{% endblocktrans %}
+{% endblock %}

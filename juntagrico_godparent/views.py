@@ -4,6 +4,7 @@ from juntagrico.util.views_admin import subscription_management_list
 from juntagrico.view_decorators import highlighted_menu
 
 from juntagrico_godparent.forms import GodparentForm, GodchildForm
+from juntagrico_godparent.mailer.adminnotification import notify_on_godchild, notify_on_godparent, notify_on_godparent_increment
 from juntagrico_godparent.mailer.membernotification import notify_matched_members
 
 from juntagrico_godparent.models import Godchild, Godparent
@@ -25,7 +26,7 @@ def home(request):
     return render(request, "jgo/home.html")
 
 
-def _registration(request, template, form_class, exists_function, instance_attr):
+def _registration(request, template, form_class, exists_function, instance_attr, notify_function):
     member = request.user.member
     exists = exists_function(member)
     initial = dict(
@@ -40,6 +41,7 @@ def _registration(request, template, form_class, exists_function, instance_attr)
             member = request.user.member
             form.instance.member = member
             form.save()
+            notify_function(form.instance, exists)
             if member.mobile_phone:
                 member.mobile_phone = form.cleaned_data['phone']
             else:
@@ -55,13 +57,13 @@ def _registration(request, template, form_class, exists_function, instance_attr)
 @login_required
 @highlighted_menu('jgo')
 def godparent(request):
-    return _registration(request, 'godparent', GodparentForm, is_godparent, 'godparent')
+    return _registration(request, 'godparent', GodparentForm, is_godparent, 'godparent', notify_on_godparent)
 
 
 @login_required
 @highlighted_menu('jgo')
 def godchild(request):
-    return _registration(request, 'godchild', GodchildForm, is_godchild, 'godchild')
+    return _registration(request, 'godchild', GodchildForm, is_godchild, 'godchild', notify_on_godchild)
 
 
 @login_required
@@ -73,8 +75,10 @@ def godchild_done(request):
 @login_required
 def increment_max_godchildren(request):
     if is_godparent(request.user.member):
-        request.user.member.godparent.max_godchildren += 1
-        request.user.member.godparent.save()
+        gp = request.user.member.godparent
+        gp.max_godchildren += 1
+        gp.save()
+        notify_on_godparent_increment(gp)
     return redirect('jgo:home')
 
 
