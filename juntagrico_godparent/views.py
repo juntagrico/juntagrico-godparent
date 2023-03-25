@@ -69,7 +69,7 @@ def godchild(request):
 @login_required
 @highlighted_menu('jgo')
 def godchild_done(request):
-    return render(request, f"jgo/godchild_done.html")
+    return render(request, "jgo/godchild_done.html")
 
 
 @login_required
