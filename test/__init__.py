@@ -10,6 +10,8 @@ from juntagrico.entity.member import Member
 from juntagrico.entity.subs import Subscription, SubscriptionPart
 from juntagrico.entity.subtypes import SubscriptionProduct, SubscriptionSize, SubscriptionType
 
+from juntagrico_godparent.models import Godparent, Godchild
+
 
 @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
 class JuntagricoTestCase(TestCase):
@@ -226,6 +228,29 @@ class JuntagricoTestCase(TestCase):
         self.sub2.primary_member = self.member2
         self.sub2.save()
         SubscriptionPart.objects.create(subscription=self.sub, type=self.sub_type)
+
+    def set_up_godchild_and_parent(self):
+        self.godparent = Godparent.objects.create(
+            member=self.member,
+            max_godchildren=1,
+            languages=["de"],
+            slots=["1am"],
+            children=True
+        )
+        self.godchild = Godchild.objects.create(
+            member=self.member2,
+            languages=["de"],
+            slots=["1am"],
+            children=True
+        )
+        self.godchild2 = Godchild.objects.create(
+            member=self.member3,
+            languages=["en"],
+            slots=["1am"],
+            children=False
+        )
+        self.member.user.user_permissions.add(
+            Permission.objects.get(codename='can_make_matches'))
 
     def assertGet(self, url, code=200, member=None):
         login_member = member or self.member
