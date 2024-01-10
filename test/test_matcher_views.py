@@ -2,7 +2,7 @@ from django.contrib.auth.models import Permission
 from django.urls import reverse
 
 from juntagrico_godparent.models import Godparent, Godchild
-from test.util.test import JuntagricoTestCase
+from test import JuntagricoTestCase
 
 
 class MatcherViewTests(JuntagricoTestCase):
@@ -40,6 +40,10 @@ class MatcherViewTests(JuntagricoTestCase):
         self.assertGet(reverse('jgo:manage-matched'))
         self.assertGet(reverse('jgo:manage-matched-removed'))
         self.assertGet(reverse('jgo:manage-matched'), member=self.member2, code=302)
+        # test views of godchild and godparent
+        self.assertGet(reverse('jgo:godchild'), member=self.member2)
+        self.assertGet(reverse('jgo:godparent'))
+        # test unmatch
         self.assertGet(reverse('jgo:manage-unmatch', args=[self.godchild.id]), code=302)
         self.godchild.refresh_from_db()
         self.assertIsNone(self.godchild.godparent)
@@ -53,6 +57,11 @@ class MatcherViewTests(JuntagricoTestCase):
         self.assertEqual(self.godchild2.godparent, self.member.godparent)
         self.assertGet(reverse('jgo:manage-matched'))
         self.assertGet(reverse('jgo:manage-matched'), member=self.member2, code=302)
+        # test views of godchild and godparent
+        self.assertGet(reverse('jgo:godchild'), member=self.member3)
+        self.assertGet(reverse('jgo:godparent'))
+        # test unmatch
         self.assertGet(reverse('jgo:manage-unmatch', args=[self.godchild2.id]), code=302)
         self.godchild2.refresh_from_db()
         self.assertIsNone(self.godchild2.godparent)
+
