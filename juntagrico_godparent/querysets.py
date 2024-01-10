@@ -20,8 +20,8 @@ class GodparentQuerySet(QuerySet):
 
 
 class GodchildQuerySet(QuerySet):
-    def matched(self, f=True):
-        return self.filter(godparent__isnull=not f).exclude(progress=self.model.DONE)
+    def matched(self, invert=True):
+        return self.filter(godparent__isnull=not invert).exclude(progress=self.model.DONE)
 
     def completed(self):
         return self.filter(progress=self.model.DONE, godparent__isnull=False)

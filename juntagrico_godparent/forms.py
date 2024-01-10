@@ -1,14 +1,16 @@
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
 from django.forms import ModelForm, Form, BooleanField, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+
 from juntagrico.config import Config
 from juntagrico.dao.activityareadao import ActivityAreaDao
 
-from juntagrico_godparent.util.customize import customizable
 from juntagrico_godparent.models import Godparent, Godchild
+from juntagrico_godparent.util.customize import customizable
 
 
 def contact_admin_link(text):
@@ -21,14 +23,16 @@ def contact_admin_link(text):
 
 @customizable
 class RegisterForm(Form):
-    areas = ModelMultipleChoiceField(queryset=ActivityAreaDao.all_visible_areas_ordered(), widget=CheckboxSelectMultiple,
+    areas = ModelMultipleChoiceField(queryset=ActivityAreaDao.all_visible_areas_ordered(),
+                                     widget=CheckboxSelectMultiple,
                                      label=_('Tätigkeitsbereiche'), required=False,
                                      help_text=_('Aktuell bist du in diesen Tätigkeitsbereichen eingetragen. '
                                                  'Bitte prüfe ob dies noch stimmt.<br>'
                                                  'Wenn du die Auswahl hier änderst, wirst du in die entsprechenden'
                                                  'Tätigkeitsbereiche eingetragen.'))
     email = CharField(label=_('E-Mail-Adresse'), disabled=True,
-                      help_text=contact_admin_link(_('Überprüfe deine E-Mail-Adresse. Kontaktiere {} um sie zu ändern.')))
+                      help_text=contact_admin_link(
+                          _('Überprüfe deine E-Mail-Adresse. Kontaktiere {} um sie zu ändern.')))
     phone = CharField(label=_('Telefonnummer'), help_text='Überprüfe deine Telefonnummer')
     accept_terms = BooleanField(label=_('Ich bin einverstanden, dass meine E-Mail-Adresse und Telefonnummer '
                                         'dem vermittelten Mitglied mitgeteilt werden.'))

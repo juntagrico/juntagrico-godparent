@@ -18,11 +18,11 @@ from juntagrico_godparent.util.utils import is_godparent, is_godchild, was_godch
 def home(request):
     member = request.user.member
     if is_godparent(member):
-        return godparent(request)
+        return godparent_signup(request)
     if was_godchild(member) and not can_be_godparent(request.user):
         return godchild_done(request)
     if is_godchild(member):
-        return godchild(request)
+        return godchild_signup(request)
     return render(request, "jgo/home.html")
 
 
@@ -56,13 +56,13 @@ def _registration(request, template, form_class, exists_function, instance_attr,
 
 @login_required
 @highlighted_menu('jgo')
-def godparent(request):
+def godparent_signup(request):
     return _registration(request, 'godparent', GodparentForm, is_godparent, 'godparent', notify_on_godparent)
 
 
 @login_required
 @highlighted_menu('jgo')
-def godchild(request):
+def godchild_signup(request):
     return _registration(request, 'godchild', GodchildForm, is_godchild, 'godchild', notify_on_godchild)
 
 
