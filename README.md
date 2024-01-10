@@ -1,6 +1,8 @@
 # juntagrico-godparent
 
 [![image](https://github.com/juntagrico/juntagrico-godparent/actions/workflows/juntagrico-ci.yml/badge.svg?branch=main&event=push)](https://github.com/juntagrico/juntagrico-godparent/actions/workflows/juntagrico-ci.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f390c5529dcde5b83e85/maintainability)](https://codeclimate.com/github/juntagrico/juntagrico-godparent/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f390c5529dcde5b83e85/test_coverage)](https://codeclimate.com/github/juntagrico/juntagrico-godparent/test_coverage)
 [![image](https://img.shields.io/github/last-commit/juntagrico/juntagrico-godparent.svg)](https://github.com/juntagrico/juntagrico-godparent)
 [![image](https://img.shields.io/github/commit-activity/y/juntagrico/juntagrico-godparent)](https://github.com/juntagrico/juntagrico-godparent)
 
