@@ -31,8 +31,10 @@ checks:
 plugins:
   csslint:
     enabled: false
-  pep8:
+  pylint:
     enabled: true
+    plugins:
+      - django
   sonar-python:
     enabled: true
 exclude_patterns:
