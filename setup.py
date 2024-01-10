@@ -9,10 +9,12 @@ SOURCE_DIR = os.path.join(ROOT_DIR)
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
 
+
 def get_requirements(requirements_file):
     with open(requirements_file) as f:
         required = [line.split('#')[0] for line in f.read().splitlines()]
     return required
+
 
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
@@ -23,13 +25,14 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     license='LPGLv3',  # example license
-    description='juntagrico-godparent',
+    description='Match godparents with new members in juntagrico to help them get started',
     long_description=README,
+    long_description_content_type='text/markdown',
     url='http://juntagrico.org',
     author='juntagrico',
     author_email='info@juntagrico.org',
     classifiers=[
-                'Development Status :: 5 - Production/Stable',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Framework :: Django :: 3.1',
