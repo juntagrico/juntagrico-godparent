@@ -1,0 +1,8 @@
+[MESSAGES CONTROL]
+disable=missing-class-docstring,
+        missing-function-docstring,
+        missing-module-docstring,
+        line-too-long,
+        unused-argument,
+        use-dict-literal,
+        import-outside-toplevel,

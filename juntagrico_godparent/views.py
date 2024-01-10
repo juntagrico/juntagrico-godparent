@@ -96,7 +96,7 @@ def arranged(request, godchild_id):
     godchild = get_object_or_404(Godchild, id=godchild_id)
     if godchild.progress == godchild.OPEN:
         member = request.user.member
-        if member == godchild.member or member == godchild.godparent.member:
+        if member in [godchild.member, godchild.godparent.member]:
             godchild.progress = godchild.ARRANGED
             godchild.save()
             # TODO: Send email
@@ -108,7 +108,7 @@ def done(request, godchild_id):
     godchild = get_object_or_404(Godchild, id=godchild_id)
     if godchild.progress == godchild.ARRANGED:
         member = request.user.member
-        if member == godchild.member or member == godchild.godparent.member:
+        if member in [godchild.member, godchild.godparent.member]:
             godchild.progress = godchild.DONE
             godchild.save()
             godchild.godparent.max_godchildren -= 1

@@ -1,15 +1,14 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import gettext as _
 from juntagrico.config import Config
 from juntagrico.entity.member import Member
 from juntagrico.util.temporal import weekday_choices, weekdays
 from multiselectfield import MultiSelectField
-from django.utils.translation import gettext as _
 from multiselectfield.db.fields import MSFList
 
 from juntagrico_godparent.querysets import GodchildQuerySet, GodparentQuerySet
 from juntagrico_godparent.util.utils import is_godparent, is_godchild, member_depot
-
 
 LANGUAGES = (('de', 'Deutsch'),
              ('fr', 'Français'),
@@ -46,7 +45,8 @@ class Criteria(models.Model):
                                    help_text=_('Für Neumitglieder mit Kindern hat sich eine Einführung '
                                                'durch ein Gotte/Götti mit Kindern bewährt.'))
     comments = models.TextField(_('Bemerkungen und weitere Kriterien'), max_length=1000, default='', blank=True,
-                                help_text=_('Was möchtest du uns noch mitteilen? Was sollten wir sonst noch beachten, bei der Vermittlung?'))
+                                help_text=_('Was möchtest du uns noch mitteilen? Was sollten wir sonst '
+                                            'noch beachten, bei der Vermittlung?'))
 
     @property
     def depot(self):
@@ -105,7 +105,7 @@ class Godchild(Criteria):
     progress = models.IntegerField(default=0, choices=progress_choices)
     notes = models.TextField(
         _('Notizen'), max_length=1000, blank=True,
-        help_text=_('Notizen für Administration. Nicht sichtbar für {}'.format(Config.vocabulary('member'))))
+        help_text=_('Notizen für Administration. Nicht sichtbar für {}').format(Config.vocabulary('member')))
 
     objects = GodchildQuerySet.as_manager()
 

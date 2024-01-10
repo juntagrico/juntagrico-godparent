@@ -1,13 +1,13 @@
+"""
+Admin notification emails
+"""
+
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 
 from juntagrico.mailer import EmailSender, base_dict, organisation_subject
 
 from juntagrico_godparent.config import GodparentConfig
-
-"""
-Admin notification emails
-"""
 
 
 def notify_on_godchild(godchild, existed):
