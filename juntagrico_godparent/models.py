@@ -92,7 +92,7 @@ class Godchild(Criteria):
     OPEN = 0
     ARRANGED = 1
     DONE = 2
-    PROGRESS = [
+    progress_choices = [
         (OPEN, _('Offen')),
         (ARRANGED, _('Abgemacht')),
         (DONE, _('Abgeschlossen')),
@@ -102,7 +102,7 @@ class Godchild(Criteria):
                                help_text=_('Hast du bestimmte Talente oder Fähigkeiten?'))
     godparent = models.ForeignKey(Godparent, verbose_name=_('Gotte/Götti'), on_delete=models.SET_NULL,
                                   null=True, blank=True)
-    progress = models.IntegerField(default=0, choices=PROGRESS)
+    progress = models.IntegerField(default=0, choices=progress_choices)
     notes = models.TextField(
         _('Notizen'), max_length=1000, blank=True,
         help_text=_('Notizen für Administration. Nicht sichtbar für {}'.format(Config.vocabulary('member'))))
