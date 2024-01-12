@@ -38,3 +38,12 @@ urlpatterns = [
     path('', include('juntagrico_godparent.urls')),
 ]
 ```
+
+## Signals
+
+The following signals are sent.
+
+* `created(instance)` from Godparent and Godchild, on signing up
+* `changed(instance)` from Godparent and Godchild, when changing their details
+* `reactivated(instance)` from Godparent, when they click the button to become godparent again
+* `matched(godchild, matcher)`, from Godchild, when a matcher matches them

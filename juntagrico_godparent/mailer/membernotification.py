@@ -1,7 +1,7 @@
 """
 Member notification emails
 """
-
+from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 
@@ -9,9 +9,11 @@ from juntagrico.mailer import EmailSender, base_dict
 from juntagrico.util.organisation_name import enriched_organisation
 
 from juntagrico_godparent.config import GodparentConfig
+from juntagrico_godparent.signals import matched
 
 
-def notify_matched_members(godchild, matcher):
+@receiver(matched, dispatch_uid='notify_matched_members')
+def notify_matched_members(godchild, matcher, **kwargs):
     godparent = godchild.godparent
     # inform godchild
     EmailSender.get_sender(

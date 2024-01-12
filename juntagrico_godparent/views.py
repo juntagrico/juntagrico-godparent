@@ -4,10 +4,9 @@ from juntagrico.util.views_admin import subscription_management_list
 from juntagrico.view_decorators import highlighted_menu
 
 from juntagrico_godparent.forms import GodparentForm, GodchildForm
-from juntagrico_godparent.mailer.adminnotification import notify_on_godchild, notify_on_godparent, notify_on_godparent_increment
-from juntagrico_godparent.mailer.membernotification import notify_matched_members
 
 from juntagrico_godparent.models import Godchild, Godparent
+from juntagrico_godparent import signals
 from juntagrico_godparent.templatetags.jgo.config import can_be_godparent
 from juntagrico_godparent.util.matches import all_possible_matches, get_matched, all_unmatchable
 from juntagrico_godparent.util.utils import is_godparent, is_godchild, was_godchild
@@ -26,7 +25,7 @@ def home(request):
     return render(request, "jgo/home.html")
 
 
-def _registration(request, template, form_class, exists_function, instance_attr, notify_function):
+def _registration(request, template, form_class, exists_function, instance_attr):
     member = request.user.member
     exists = exists_function(member)
     initial = dict(
@@ -41,7 +40,12 @@ def _registration(request, template, form_class, exists_function, instance_attr,
             member = request.user.member
             form.instance.member = member
             form.save()
-            notify_function(form.instance, exists)
+            # send signal
+            if not exists:
+                signals.created.send(form.instance.__class__, instance=form.instance)
+            else:
+                signals.changed.send(form.instance.__class__, instance=form.instance)
+            # update member
             if member.mobile_phone:
                 member.mobile_phone = form.cleaned_data['phone']
             else:
@@ -57,13 +61,13 @@ def _registration(request, template, form_class, exists_function, instance_attr,
 @login_required
 @highlighted_menu('jgo')
 def godparent_signup(request):
-    return _registration(request, 'godparent', GodparentForm, is_godparent, 'godparent', notify_on_godparent)
+    return _registration(request, 'godparent', GodparentForm, is_godparent, 'godparent')
 
 
 @login_required
 @highlighted_menu('jgo')
 def godchild_signup(request):
-    return _registration(request, 'godchild', GodchildForm, is_godchild, 'godchild', notify_on_godchild)
+    return _registration(request, 'godchild', GodchildForm, is_godchild, 'godchild')
 
 
 @login_required
@@ -78,7 +82,7 @@ def increment_max_godchildren(request):
         gp = request.user.member.godparent
         gp.max_godchildren += 1
         gp.save()
-        notify_on_godparent_increment(gp)
+        signals.reactivated.send(gp.__class__, instance=gp)
     return redirect('jgo:home')
 
 
@@ -131,7 +135,7 @@ def match(request):
                 godchild = get_object_or_404(Godchild, id=godchild)
                 godchild.godparent_id = godparent
                 godchild.save()
-                notify_matched_members(godchild, request.user.member)
+                signals.matched.send(godchild.__class__, godchild=godchild, matcher=request.user.member)
                 render_dict['form_result'] = 'success'
     return subscription_management_list(all_possible_matches(), render_dict,
                                         'jgo/manage/match_maker.html', request)
@@ -144,6 +148,7 @@ def unmatchable(request):
         godchild = get_object_or_404(Godchild, id=request.POST.get('godchild'))
         godchild.godparent_id = request.POST.get('godparent')
         godchild.save()
+        signals.matched.send(godchild.__class__, godchild=godchild, matcher=request.user.member)
         render_dict['form_result'] = 'success'
     return subscription_management_list(all_unmatchable(), render_dict,
                                         'jgo/manage/unmatchable.html', request)

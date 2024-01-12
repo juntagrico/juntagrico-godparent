@@ -1,3 +1,4 @@
+from django.core import mail
 from django.urls import reverse
 
 from juntagrico_godparent.models import Godchild
@@ -14,6 +15,10 @@ class MatcherViewTests(JuntagricoTestCase):
         self.assertGet(reverse('jgo:manage-match'))
         self.assertGet(reverse('jgo:manage-match'), member=self.member2, code=302)
         self.assertPost(reverse('jgo:manage-match'), data={'match-1-1': "on"})
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(mail.outbox[0].recipients(), [self.member2.email])
+        self.assertEqual(mail.outbox[1].recipients(), [self.member.email])
+        mail.outbox = []
         self.godchild.refresh_from_db()
         self.assertEqual(self.godchild.godparent, self.member.godparent)
         self.assertGet(reverse('jgo:manage-matched'))
@@ -32,6 +37,10 @@ class MatcherViewTests(JuntagricoTestCase):
         self.assertGet(reverse('jgo:manage-unmatchable'), member=self.member2, code=302)
         self.assertPost(reverse('jgo:manage-unmatchable'), data={'godparent': self.godparent.id,
                                                                  'godchild': self.godchild2.id})
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(mail.outbox[0].recipients(), [self.member3.email])
+        self.assertEqual(mail.outbox[1].recipients(), [self.member.email])
+        mail.outbox = []
         self.godchild2.refresh_from_db()
         self.assertEqual(self.godchild2.godparent, self.member.godparent)
         self.assertGet(reverse('jgo:manage-matched'))
