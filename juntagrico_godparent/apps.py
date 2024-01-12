@@ -8,4 +8,4 @@ class GodparentConfig(AppConfig):
 
     def ready(self):
         # import to connect signals
-        from .mailer import adminnotification, membernotification
+        from .mailer import adminnotification, membernotification  # noqa: F401
