@@ -1,4 +1,0 @@
--r requirements.txt
-ruff
-coverage
-reportlab==3.6.6
