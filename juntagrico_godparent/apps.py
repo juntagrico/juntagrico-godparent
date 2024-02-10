@@ -9,3 +9,6 @@ class GodparentConfig(AppConfig):
     def ready(self):
         # import to connect signals
         from .mailer import adminnotification, membernotification  # noqa: F401
+
+        from juntagrico.util import addons
+        addons.config.register_version(self.name)

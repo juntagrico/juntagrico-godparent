@@ -140,7 +140,7 @@
             </div>
         </div>
     {% endif %}
-    {% if form.instance.remaining_godchildren > 0 or form.errors %}
+    {% if form.instance.pk is None or form.instance.remaining_godchildren > 0 or form.errors %}
         <div class="row mb-3">
             <div class="col-md-12">
                 <h4>
@@ -177,7 +177,7 @@
             </div>
         {% endif %}
     {% endif %}
-    {% if form.instance.godchild_set.completed.exists %}
+    {% if form.instance.pk and form.instance.godchild_set.completed.exists %}
         <div class="row mb-3">
             <div class="col-md-12">
                 {% block godchildren_completed %}

@@ -20,13 +20,13 @@ Install juntagrico-godparent via `pip`
 
 or add it in your projects `requirements.txt`
 
-In `settings.py` add `'juntagrico_godparent',`.
+In `settings.py` add `'juntagrico_godparent', somewhere `**above** `'juntagrico',`.
 
 ```python
 INSTALLED_APPS = [
     ...
-    'juntagrico',
     'juntagrico_godparent',
+    'juntagrico',
 ]
 ```
 
