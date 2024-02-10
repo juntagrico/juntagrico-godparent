@@ -2,10 +2,10 @@ from django.core import mail
 from django.urls import reverse
 
 from juntagrico_godparent.config import GodparentConfig
-from test import JuntagricoTestCase
+from . import JuntagricoGodparentTestCase
 
 
-class ViewTests(JuntagricoTestCase):
+class ViewTests(JuntagricoGodparentTestCase):
 
     def testHome(self):
         self.assertGet(reverse('jgo:home'))

@@ -1,17 +1,18 @@
 from django.urls import reverse
 
 from juntagrico_godparent.models import Godchild
-from test import JuntagricoTestCase
+from . import JuntagricoGodparentTestCase
 
 
-class ProcessTests(JuntagricoTestCase):
+class ProcessTests(JuntagricoGodparentTestCase):
 
-    def setUp(self):
-        super().setUp()
-        self.set_up_godchild_and_parent()
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.set_up_godchild_and_parent()
         # match
-        self.godchild.godparent = self.godparent
-        self.godchild.save()
+        cls.godchild.godparent = cls.godparent
+        cls.godchild.save()
 
     def run_process(self, member):
         # arranged
