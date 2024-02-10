@@ -1,6 +1,6 @@
-{% extends 'menu/admin_menu.html' %}
+{% extends 'juntagrico/menu/admin.html' %}
 {% load i18n %}
-{% block extend_admin_menu %}
+{% block extend %}
     {% if perms.juntagrico_godparent.can_make_matches %}
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#godparentman">
