@@ -1,0 +1,38 @@
+{% extends 'juntagrico/menu/admin.html' %}
+{% load i18n %}
+{% block extend %}
+    {% if perms.juntagrico_godparent.can_make_matches %}
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#godparentman">
+                {% trans "Gotte/Götti Vermittlung" %}
+                <i class="fas fa-angle-right">
+                </i>
+            </a>
+            <div class="collapse{% if request.resolver_match.app_name == 'jgo' and 'manage' in request.resolver_match.url_name %} show{% endif %}" id="godparentman">
+                <ul class="nav flex-column subadmin-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'jgo:manage-match' %}">
+                            {% trans "Passend" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'jgo:manage-unmatchable' %}">
+                            {% trans "Nicht passend" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'jgo:manage-matched' %}">
+                            {% trans "Vermittelt" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'jgo:manage-completed' %}">
+                            {% trans "Abgeschlossen" %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

@@ -2,14 +2,16 @@ from django.core import mail
 from django.urls import reverse
 
 from juntagrico_godparent.models import Godchild
-from test import JuntagricoTestCase
+
+from . import JuntagricoGodparentTestCase
 
 
-class MatcherViewTests(JuntagricoTestCase):
+class MatcherViewTests(JuntagricoGodparentTestCase):
 
-    def setUp(self):
-        super().setUp()
-        self.set_up_godchild_and_parent()
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.set_up_godchild_and_parent()
 
     def testMatch(self):
         self.assertGet(reverse('jgo:manage-match'))

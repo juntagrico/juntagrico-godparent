@@ -18,6 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'juntagrico_godparent',
     'juntagrico',
+    'fontawesomefree',
+    'import_export',
     'impersonate',
     'adminsortable2',
     'polymorphic',
@@ -115,7 +117,7 @@ TEMPLATES = [
     },
 ]
 
-LOGIN_REDIRECT_URL = "/my/home"
+LOGIN_REDIRECT_URL = "/"
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
@@ -130,6 +132,8 @@ CACHES = {
     }
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+IMPORT_EXPORT_EXPORT_PERMISSION_CODE = 'view'
 
 
 GODPARENT_CONTACT = 'godparent@juntagrico.juntagrico'

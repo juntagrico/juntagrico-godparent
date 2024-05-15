@@ -1,0 +1,12 @@
+{% extends 'juntagrico/menu/user.html' %}
+{% load jgo.config %}
+{% load juntagrico.common %}
+{% block extend %}
+    {% jgo_config "show_menu" as b_show_menu %}
+    {% if b_show_menu or perms.juntagrico_godparent.can_make_matches %}
+        <li class="nav-item">
+            <a class="nav-link {{ request|activemenu:"jgo" }}" href="{% url 'jgo:home' %}">Gotte &amp; Götti</a>
+        </li>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}
