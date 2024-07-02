@@ -35,9 +35,9 @@ def week_slots_choices():
 class Criteria(models.Model):
     member = models.OneToOneField(Member, verbose_name=Config.vocabulary('member'), on_delete=models.CASCADE)
     creation_date = models.DateField(_('Erstellungsdatum'), auto_now_add=True)
-    languages = MultiSelectField(_('Verständigung'), choices=LANGUAGES, max_length=1000,
+    languages = MultiSelectField(_('Verständigung'), choices=LANGUAGES, max_length=100,
                                  help_text=_('Wähle die Sprachen aus, die du sprichst.'))
-    slots = MultiSelectField(_('Verfügbarkeit'), choices=week_slots_choices(), max_length=1000,
+    slots = MultiSelectField(_('Verfügbarkeit'), choices=week_slots_choices(), max_length=100,
                              help_text=_('Während diesen Zeitfenstern bin ich üblicherweise verfügbar und könnte mich '
                                          'zu einer Einführung bzw. einem ersten gemeinsamen Einsatz treffen.'))
     children = models.BooleanField(_(f'Ich habe Kinder, die ich zu den Einsätzen '
