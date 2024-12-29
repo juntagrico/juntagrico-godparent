@@ -135,6 +135,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 IMPORT_EXPORT_EXPORT_PERMISSION_CODE = 'view'
 
+ENABLE_SHARES = True
 
 GODPARENT_CONTACT = 'godparent@juntagrico.juntagrico'
 GODPARENT_SHOW_MENU = False
