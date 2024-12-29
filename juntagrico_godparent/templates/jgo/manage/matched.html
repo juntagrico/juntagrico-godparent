@@ -1,11 +1,13 @@
 {% extends "jgo/manage/man_list_matcher.html" %}
 {% load i18n %}
 {% load juntagrico.config %}
+
 {% block page_title %}
     <h3>
         {% blocktrans %}Vermittelte Gotte & Göttis{% endblocktrans %}
     </h3>
 {% endblock %}
+
 {% block list %}
     {% if removed %}
         <div class="alert alert-success">
