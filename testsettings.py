@@ -121,16 +121,6 @@ LOGIN_REDIRECT_URL = "/"
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
-BILLING = True
-
-CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-            'LOCATION': 'juntagrico_app_cache_table',
-            'TIMEOUT': None,
-        }
-    }
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 IMPORT_EXPORT_EXPORT_PERMISSION_CODE = 'view'
