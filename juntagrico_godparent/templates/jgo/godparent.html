@@ -4,6 +4,7 @@
 {% load i18n %}
 {% load static %}
 {% load crispy_forms_tags %}
+
 {% block page_title %}
     {% if exists %}
         <h3>Dein Gotte/Götti-Profil</h3>
@@ -11,10 +12,12 @@
         <h3>Melde dich als Gotte oder Götti an</h3>
     {% endif %}
 {% endblock %}
+
 {% block styles %}
     {{ block.super }}
     <link href="{% static 'jgo/css/registration.css' %}" rel="stylesheet"/>
 {% endblock %}
+
 {% block content %}
     {% if exists and not form.errors %}
         <div class="row mb-3">

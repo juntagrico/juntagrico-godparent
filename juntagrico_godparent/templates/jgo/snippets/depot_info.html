@@ -10,20 +10,20 @@
         </div>
         <div class="col-md-9">
             <p>
-                    {% blocktrans %}
-                        Wenn möglich versuchen wir dich an ein Mitglied im gleichen {{ v_depot }} zu vermitteln.
-                        Du bist aktuell in folgendem {{ v_depot }}:
+                {% blocktrans trimmed %}
+                    Wenn möglich versuchen wir dich an ein Mitglied im gleichen {{ v_depot }} zu vermitteln.
+                    Du bist aktuell in folgendem {{ v_depot }}:
+                {% endblocktrans %}
+                <br>
+                <strong>{{ member_depot.name }}</strong>
+                {% member_subscription request.user.member as sub %}
+                {% if sub.primary_member == request.user.member %}
+                    | <a href="{% url 'depot-change' sub.id %}">{% trans "ändern" %}</a>
+                {% else %}
+                    {% blocktrans trimmed %}
+                        (Nur das Hauptmitglied kann das {{ v_depot }} ändern)
                     {% endblocktrans %}
-                    <br>
-                    <strong>{{ member_depot.name }}</strong>
-                    {% member_subscription request.user.member as sub %}
-                    {% if sub.primary_member == request.user.member %}
-                        | <a href="{% url 'depot-change' sub.id %}">{% trans "ändern" %}</a>
-                    {% else %}
-                        {% blocktrans %}
-                            (Nur das Hauptmitglied kann das {{ v_depot }} ändern)
-                        {% endblocktrans %}
-                    {% endif %}
+                {% endif %}
             </p>
        </div>
     </div>
