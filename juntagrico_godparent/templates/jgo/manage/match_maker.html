@@ -2,11 +2,13 @@
 {% load i18n %}
 {% load static %}
 {% load juntagrico.config %}
+
 {% block page_title %}
     <h3>
         {% blocktrans %}Gotte & Götti vermitteln{% endblocktrans %}
     </h3>
 {% endblock %}
+
 {% block list %}
     {% if form_result == "success" %}
         <div class="alert alert-success">
@@ -110,6 +112,7 @@
         </button>
     </form>
 {% endblock %}
+
 {% block scripts %}
     {{ block.super }}
     <script type="text/javascript" src="{% static 'jgo/js/initMatchMaker.js' %}">

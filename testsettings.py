@@ -30,7 +30,7 @@ INSTALLED_APPS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME':  'yourdatabasename.db',
+        'NAME':  'dev.1.7.db',
     }
 }
 
@@ -106,12 +106,13 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
+                'juntagrico.context_processors.vocabulary'
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader'
             ],
-            'string_if_invalid': InvalidTemplateVariable("%s"),
+            #'string_if_invalid': InvalidTemplateVariable("%s"),
             'debug': True
         },
     },
