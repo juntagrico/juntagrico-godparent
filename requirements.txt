@@ -1,4 +1,3 @@
 -e .
 ruff
 coverage
-juntagrico~=1.6.0
