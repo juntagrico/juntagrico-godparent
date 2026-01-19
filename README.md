@@ -11,8 +11,8 @@ Match godparents with new members in juntagrico to help them get started.
 This is an extension for juntagrico. You can find more information about juntagrico here
 (https://github.com/juntagrico/juntagrico)
 
-## Installation
 
+## Installation
 
 Install juntagrico-godparent via `pip`
 
@@ -35,9 +35,10 @@ In your `urls.py` you also need to extend the pattern:
 ```python
 urlpatterns = [
     ...
-    path('', include('juntagrico_godparent.urls')),
+    path('jgo/', include('juntagrico_godparent.urls')),
 ]
 ```
+
 
 ## Signals
 

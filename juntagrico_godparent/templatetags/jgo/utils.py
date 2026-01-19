@@ -1,5 +1,6 @@
 from django import template
-from juntagrico.util.temporal import weekdays
+
+from juntagrico_godparent.models import week_slots_choices
 from juntagrico_godparent.util import utils
 
 register = template.Library()
@@ -15,9 +16,14 @@ def member_subscription(member):
     return member.subscription_future or member.subscription_current
 
 
-@register.simple_tag
-def weekday_from_option(option, length=None):
-    weekday = weekdays[int(option[0])]
-    if length:
-        return weekday[:length]
-    return weekday
+@register.inclusion_tag('jgo/snippets/slot_grid.html')
+def slot_grid(slots, matching_slots):
+    return {
+        'slots': slots,
+        'matching_slots': matching_slots,
+        'choices': [
+            (weekday[:2], option[0])
+            for weekday, options in week_slots_choices()
+            for option in options
+        ]
+    }

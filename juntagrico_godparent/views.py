@@ -1,9 +1,12 @@
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
+from juntagrico.entity.member import Member
 from juntagrico.util.views_admin import subscription_management_list
 from juntagrico.view_decorators import highlighted_menu
+from juntagrico.views.email import email_view
 
-from juntagrico_godparent.forms import GodparentForm, GodchildForm
+from juntagrico_godparent.forms import GodparentForm, GodchildForm, ContactForm
 
 from juntagrico_godparent.models import Godchild, Godparent
 from juntagrico_godparent import signals
@@ -174,3 +177,13 @@ def completed(request):
     render_dict = {'change_date_disabled': True}
     return subscription_management_list(Godchild.objects.completed(), render_dict,
                                         'jgo/manage/completed.html', request)
+
+
+@permission_required('juntagrico_godparent.can_make_matches')
+def contact(request, member_id):
+    member = get_object_or_404(Member, id=member_id)
+    if not is_godparent(member) and not hasattr(member, 'godchild'):
+        raise PermissionDenied
+    return email_view(request, ContactForm, {
+        'to_members': [member_id]
+    })

@@ -3,9 +3,8 @@ from django.db import models
 from django.utils.translation import gettext as _
 from juntagrico.config import Config
 from juntagrico.entity.member import Member
-from juntagrico.util.temporal import weekday_choices, weekdays
+from juntagrico.util.temporal import weekday_choices
 from multiselectfield import MultiSelectField
-from multiselectfield.db.fields import MSFList
 
 from juntagrico_godparent.querysets import GodchildQuerySet, GodparentQuerySet
 from juntagrico_godparent.util.utils import is_godparent, is_godchild, member_depot
@@ -110,17 +109,23 @@ class Godchild(Criteria):
 
     objects = GodchildQuerySet.as_manager()
 
-    def matching_languages(self):
+    def get_matching_languages_display(self):
         if self.godparent:
-            return MSFList(self.languages.choices, set(self.languages).intersection(set(self.godparent.languages)))
-        return set()
+            matching = set(self.languages).intersection(set(self.godparent.languages))
+            languages = dict(LANGUAGES)
+            return ', '.join((languages[language] for language in matching))
+        return _('Keine')
 
-    def matching_slots(self):
+    def get_matching_slots_display(self):
         if self.godparent:
-            # attach weekday to choice names
-            choices = {k: weekdays[int(k[0])] + " " + v for k, v in self.slots.choices.items()}
-            return MSFList(choices, set(self.slots).intersection(set(self.godparent.slots)))
-        return set()
+            matching = set(self.slots).intersection(set(self.godparent.slots))
+            options = {
+                option: f'{weekday} {option_name}'
+                for weekday, options in week_slots_choices()
+                for option, option_name in options
+            }
+            return ', '.join(options[slot] for slot in matching)
+        return _('Keine')
 
     def matching_areas(self):
         if self.godparent:

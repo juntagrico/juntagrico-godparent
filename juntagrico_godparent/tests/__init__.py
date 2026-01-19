@@ -16,6 +16,7 @@ class JuntagricoGodparentTestCase(JuntagricoTestCase):
         cls.set_up_depots()
         cls.set_up_sub_types()
         cls.set_up_sub()
+        cls.default_member = cls.member
 
     @classmethod
     def set_up_godchild_and_parent(cls):

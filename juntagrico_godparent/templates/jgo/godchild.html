@@ -29,8 +29,8 @@
                                 <strong>{{ godparent }}</strong>:
                                 <a href="mailto:{{ godparent.member.email }}">{{ godparent.member.email }}</a>,
                                 {{ godparent.member.mobile_phone|default:godparent.member.phone }}<br>
-                                {% trans "Gemeinsame Sprachen:" %} {{ godchild.matching_languages|default:'Keine' }}<br>
-                                {% trans "Gemeinsame Zeitfenster:" %} {{ godchild.matching_slots|default:'Keine' }}<br>
+                                {% trans "Gemeinsame Sprachen:" %} {{ godchild.get_matching_languages_display }}<br>
+                                {% trans "Gemeinsame Zeitfenster:" %} {{ godchild.get_matching_slots_display }}<br>
                                 {% trans "Status:" %} {{ godchild.get_progress_display }}<br>
                                 {% if godchild.progress == godchild.OPEN %}
                                     <p>Diese Person wird sich demnächst bei dir melden.</p>

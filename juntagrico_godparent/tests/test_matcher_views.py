@@ -12,6 +12,7 @@ class MatcherViewTests(JuntagricoGodparentTestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.set_up_godchild_and_parent()
+        cls.default_member = cls.member
 
     def testMatch(self):
         self.assertGet(reverse('jgo:manage-match'))

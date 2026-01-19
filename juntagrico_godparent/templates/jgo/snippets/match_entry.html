@@ -1,12 +1,13 @@
+{% load jgo.utils %}
 {% load juntagrico.config %}
 {% load i18n %}
-{{ subject.member }} <a href="{% url "contact-member" subject.member.id %}" class="far fa-envelope"></a>
+{{ subject.member }} <a href="{% url "jgo:contact" subject.member.id %}" class="far fa-envelope"></a>
 <a href="{% url subject.admin_change_url_name subject.id %}" class="fas fa-pen"></a>
 <br>
 <a href="mailto:{{ subject.member.email }}">{{ subject.member.email }}</a><br>
 {{ subject.member.mobile_phone|default:subject.member.phone }}<br>
-<div>{{ subject.languages }}</div>
-{% include "jgo/snippets/slot_grid.html" with slots=subject.slots %}
+<div>{{ subject.get_languages_display }}</div>
+{% slot_grid subject.slots matching_slots %}
 <div>{% trans "Kinder:" %} {% if subject.children %}Ja{% else %}Nein/Egal{% endif %}</div>
 {% vocabulary "depot" %}: {{ subject.depot.name|default:'-' }}<br>
 {% if subject.member.areas.count %}
