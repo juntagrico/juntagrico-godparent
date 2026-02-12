@@ -18,7 +18,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'juntagrico_godparent',
     'juntagrico',
-    'fontawesomefree',
     'import_export',
     'impersonate',
     'adminsortable2',

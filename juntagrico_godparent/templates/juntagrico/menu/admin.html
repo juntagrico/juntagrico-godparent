@@ -3,10 +3,9 @@
 {% block extend %}
     {% if perms.juntagrico_godparent.can_make_matches %}
         <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#godparentman">
+            <a class="nav-link {% if request.resolver_match.app_name != 'jgo' or 'manage' not in request.resolver_match.url_name %} collapsed{% endif %}" data-toggle="collapse" href="#godparentman">
+                <i class="bi bi-caret-down turn"></i>
                 {% trans "Gotte/Götti Vermittlung" %}
-                <i class="fas fa-angle-right">
-                </i>
             </a>
             <div class="collapse{% if request.resolver_match.app_name == 'jgo' and 'manage' in request.resolver_match.url_name %} show{% endif %}" id="godparentman">
                 <ul class="nav flex-column subadmin-menu">
