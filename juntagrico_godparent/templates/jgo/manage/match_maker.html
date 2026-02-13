@@ -10,11 +10,6 @@
 {% endblock %}
 
 {% block list %}
-    {% if form_result == "success" %}
-        <div class="alert alert-success">
-            {% trans "Neumitglied und Gotte/Götti wurden vermittelt." %}
-        </div>
-    {% endif %}
     <div class="mb-4">
         {% blocktrans with rp=available_godparents.count rpc=available_godparents.remaining_capacity %}
             {{ rp }} Gotte/Götti(s) kann/können noch {{ rpc }} Neumitglied(er) betreuen.
@@ -57,13 +52,10 @@
                     <th class="filter">
                         {% trans "Notizen" %}
                     </th>
-                    <th class="d-none">
-                        {% trans "E-Mail" %}
-                    </th>
                 </tr>
             </thead>
             <tbody>
-                {% for possible_match in management_list %}
+                {% for possible_match in object_list %}
                     {% with godparent=possible_match.godparent godchild=possible_match.godchild %}
                         <tr class="possible-match godparent-{{ godparent.id }} godchild-{{ godchild.id }}">
                             <td>
@@ -98,9 +90,6 @@
                             <td>
                                 {{ godchild.notes }}
                                 <a href="{% url godchild.admin_change_url_name godchild.id %}" class="bi bi-pencil-square"></a>
-                            </td>
-                            <td class="email d-none">
-                                {{ godparent.member.email }},{{ godchild.member.email }}
                             </td>
                         </tr>
                     {% endwith %}

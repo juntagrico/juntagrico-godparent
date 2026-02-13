@@ -13,11 +13,11 @@ urlpatterns = [
     path('leave', views.leave, name='leave'),
 
     # admin urls
-    path('manage/match', views.match, name='manage-match'),
-    path('manage/matched', views.matched, name='manage-matched'),
-    path('manage/matched/removed', views.matched, {'removed': True}, name='manage-matched-removed'),
-    path('manage/unmatchable', views.unmatchable, name='manage-unmatchable'),
+    path('manage/match', views.MatchView.as_view(), name='manage-match'),
+    path('manage/matched', views.MatchedView.as_view(), name='manage-matched'),
+    path('manage/unmatchable', views.UnmatchableView.as_view(), name='manage-unmatchable'),
     path('manage/unmatch/<int:godchild_id>', views.unmatch, name='manage-unmatch'),
-    path('manage/completed', views.completed, name='manage-completed'),
-    path('contact/<int:member_id>', views.contact, name='contact'),
+    path('manage/completed', views.CompletedView.as_view(), name='manage-completed'),
+    path('contact/<int:member_id>', views.contact_member, name='contact-member'),
+    path('contact', views.contact_members, name='contact'),
 ]

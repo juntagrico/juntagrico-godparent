@@ -9,12 +9,6 @@
 {% endblock %}
 
 {% block list %}
-    {% if form_result == "success" %}
-        <div class="alert alert-success">
-            {% trans "Neumitglied und Gotte/Götti wurden vermittelt." %}
-        </div>
-    {% endif %}
-
     <form action="" method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-success">
@@ -32,13 +26,10 @@
                             <th class="filter">
                                 {% trans "Verbleibend" %}
                             </th>
-                            <th class="d-none">
-                                {% trans "E-Mail" %}
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for godparent in management_list.godparents %}
+                        {% for godparent in object_list.godparents %}
                             <tr class="godparent-{{ godparent.id }}">
                                 <td>
                                     <input type="radio" id="{{ godparent.id }}"
@@ -49,9 +40,6 @@
                                 </td>
                                 <td>
                                     {{ godparent.remaining_godchildren }}
-                                </td>
-                                <td class="email d-none">
-                                    {{ godparent.member.email }}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -70,13 +58,10 @@
                             <th class="filter">
                                 {% trans "Notizen" %}
                             </th>
-                            <th class="d-none">
-                                {% trans "E-Mail" %}
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for godchild in management_list.godchildren %}
+                        {% for godchild in object_list.godchildren %}
                             <tr class="godchild-{{ godchild.id }}">
                                 <td>
                                     <input type="radio" id="{{ godchild.id }}"
@@ -88,9 +73,6 @@
                                 <td>
                                     {{ godchild.notes }}
                                     <a href="{% url godchild.admin_change_url_name godchild.id %}" class="bi bi-pencil-square"></a>
-                                </td>
-                                <td class="email d-none">
-                                    {{ godchild.member.email }}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -104,8 +86,7 @@
     </form>
 {% endblock %}
 
-{% block scripts %}
+{% block datatable_constructor %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static 'jgo/js/initUnmatchable.js' %}">
-    </script>
+    $("#filter-table-godparents").DataTable(config)
 {% endblock %}
