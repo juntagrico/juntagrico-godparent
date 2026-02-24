@@ -146,6 +146,7 @@ class MatchView(GodparentListView):
         return all_possible_matches
 
     def post(self, request, *args, **kwargs):
+        success = False
         for name, value in request.POST.items():
             if name.startswith('match-') and value == 'on':
                 godparent, godchild = name.split('-')[1:]
@@ -153,9 +154,12 @@ class MatchView(GodparentListView):
                 godchild.godparent_id = godparent
                 godchild.save()
                 signals.matched.send(godchild.__class__, godchild=godchild, matcher=request.user.member)
-                messages.success(request, 'Neumitglied und Gotte/Götti wurden vermittelt.')
-                return redirect('jgo:manage-match')
-        return super().get(request, *args, **kwargs)
+                success = True
+        if success:
+            messages.success(request, 'Neumitglied und Gotte/Götti wurden vermittelt.')
+        else:
+            messages.error(request, 'Wähle mindestens eine passende Kombination aus')
+        return redirect('jgo:manage-match')
 
 
 class UnmatchableView(GodparentListView):
@@ -165,14 +169,15 @@ class UnmatchableView(GodparentListView):
         return all_unmatchable
 
     def post(self, request, *args, **kwargs):
-        if request.method == 'POST' and request.POST.get('godparent') and request.POST.get('godchild'):
+        if request.POST.get('godparent') and request.POST.get('godchild'):
             godchild = get_object_or_404(Godchild, id=request.POST.get('godchild'))
             godchild.godparent_id = request.POST.get('godparent')
             godchild.save()
             signals.matched.send(godchild.__class__, godchild=godchild, matcher=request.user.member)
             messages.success(request, 'Neumitglied und Gotte/Götti wurden vermittelt.')
-            return redirect('jgo:manage-unmatchable')
-        return super().get(request, *args, **kwargs)
+        else:
+            messages.error(request, 'Wähle ein Gotte/Götti und ein Neumitglied aus.')
+        return redirect('jgo:manage-unmatchable')
 
 
 class MatchedView(GodparentListView):

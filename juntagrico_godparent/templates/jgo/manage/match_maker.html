@@ -21,8 +21,8 @@
     </div>
     <form action="" method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-success">
-            {% trans "Vermitteln" %}
+        <button type="submit" class="btn btn-success mb-2">
+            <i class="bi bi-arrows-collapse-vertical"></i> {% trans "Vermitteln" %}
         </button>
         <table id="filter-table" class="list table" style="display: table;">
             <thead>
@@ -97,7 +97,7 @@
             </tbody>
         </table>
         <button type="submit" class="btn btn-success">
-            {% trans "Vermitteln" %}
+            <i class="bi bi-arrows-collapse-vertical"></i> {% trans "Vermitteln" %}
         </button>
     </form>
 {% endblock %}
