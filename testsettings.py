@@ -15,16 +15,18 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin',
+    'juntagrico.apps.JuntagricoAdminConfig',
     'juntagrico_godparent',
     'juntagrico',
-    'fontawesomefree',
     'import_export',
     'impersonate',
     'adminsortable2',
     'polymorphic',
     'crispy_forms',
+    'crispy_bootstrap4',
     'multiselectfield',
+    'django_select2',
+    'djrichtextfield',
 ]
 
 DATABASES = {
@@ -61,7 +63,6 @@ EMAIL_USE_TLS = os.environ.get('JUNTAGRICO_EMAIL_TLS', False)
 
 if DEBUG is True:
     # display all emails in console instead
-    WHITELIST_EMAILS = [r'.*']
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
@@ -119,8 +120,6 @@ TEMPLATES = [
 ]
 
 LOGIN_REDIRECT_URL = "/"
-
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 

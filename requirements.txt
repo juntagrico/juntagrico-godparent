@@ -1,3 +1,4 @@
 -e .
 ruff
 coverage
+pre-commit

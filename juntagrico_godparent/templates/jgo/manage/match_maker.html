@@ -10,11 +10,6 @@
 {% endblock %}
 
 {% block list %}
-    {% if form_result == "success" %}
-        <div class="alert alert-success">
-            {% trans "Neumitglied und Gotte/Götti wurden vermittelt." %}
-        </div>
-    {% endif %}
     <div class="mb-4">
         {% blocktrans with rp=available_godparents.count rpc=available_godparents.remaining_capacity %}
             {{ rp }} Gotte/Götti(s) kann/können noch {{ rpc }} Neumitglied(er) betreuen.
@@ -26,8 +21,8 @@
     </div>
     <form action="" method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-success">
-            {% trans "Vermitteln" %}
+        <button type="submit" class="btn btn-success mb-2">
+            <i class="bi bi-arrows-collapse-vertical"></i> {% trans "Vermitteln" %}
         </button>
         <table id="filter-table" class="list table" style="display: table;">
             <thead>
@@ -57,13 +52,10 @@
                     <th class="filter">
                         {% trans "Notizen" %}
                     </th>
-                    <th class="d-none">
-                        {% trans "E-Mail" %}
-                    </th>
                 </tr>
             </thead>
             <tbody>
-                {% for possible_match in management_list %}
+                {% for possible_match in object_list %}
                     {% with godparent=possible_match.godparent godchild=possible_match.godchild %}
                         <tr class="possible-match godparent-{{ godparent.id }} godchild-{{ godchild.id }}">
                             <td>
@@ -97,10 +89,7 @@
                             </td>
                             <td>
                                 {{ godchild.notes }}
-                                <a href="{% url godchild.admin_change_url_name godchild.id %}" class="fas fa-pen"></a>
-                            </td>
-                            <td class="email d-none">
-                                {{ godparent.member.email }},{{ godchild.member.email }}
+                                <a href="{% url godchild.admin_change_url_name godchild.id %}" class="bi bi-pencil-square"></a>
                             </td>
                         </tr>
                     {% endwith %}
@@ -108,7 +97,7 @@
             </tbody>
         </table>
         <button type="submit" class="btn btn-success">
-            {% trans "Vermitteln" %}
+            <i class="bi bi-arrows-collapse-vertical"></i> {% trans "Vermitteln" %}
         </button>
     </form>
 {% endblock %}

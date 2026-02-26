@@ -12,11 +12,12 @@ class MatcherViewTests(JuntagricoGodparentTestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.set_up_godchild_and_parent()
+        cls.default_member = cls.member
 
     def testMatch(self):
         self.assertGet(reverse('jgo:manage-match'))
-        self.assertGet(reverse('jgo:manage-match'), member=self.member2, code=302)
-        self.assertPost(reverse('jgo:manage-match'), data={'match-1-1': "on"})
+        self.assertGet(reverse('jgo:manage-match'), member=self.member2, code=403)
+        self.assertPost(reverse('jgo:manage-match'), data={'match-1-1': "on"}, code=302)
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(mail.outbox[0].recipients(), [self.member2.email])
         self.assertEqual(mail.outbox[1].recipients(), [self.member.email])
@@ -24,8 +25,7 @@ class MatcherViewTests(JuntagricoGodparentTestCase):
         self.godchild.refresh_from_db()
         self.assertEqual(self.godchild.godparent, self.member.godparent)
         self.assertGet(reverse('jgo:manage-matched'))
-        self.assertGet(reverse('jgo:manage-matched-removed'))
-        self.assertGet(reverse('jgo:manage-matched'), member=self.member2, code=302)
+        self.assertGet(reverse('jgo:manage-matched'), member=self.member2, code=403)
         # test views of godchild and godparent
         self.assertGet(reverse('jgo:godchild'), member=self.member2)
         self.assertGet(reverse('jgo:godparent'))
@@ -36,9 +36,9 @@ class MatcherViewTests(JuntagricoGodparentTestCase):
 
     def testUnmatchable(self):
         self.assertGet(reverse('jgo:manage-unmatchable'))
-        self.assertGet(reverse('jgo:manage-unmatchable'), member=self.member2, code=302)
+        self.assertGet(reverse('jgo:manage-unmatchable'), member=self.member2, code=403)
         self.assertPost(reverse('jgo:manage-unmatchable'), data={'godparent': self.godparent.id,
-                                                                 'godchild': self.godchild2.id})
+                                                                 'godchild': self.godchild2.id}, code=302)
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(mail.outbox[0].recipients(), [self.member3.email])
         self.assertEqual(mail.outbox[1].recipients(), [self.member.email])
@@ -46,7 +46,7 @@ class MatcherViewTests(JuntagricoGodparentTestCase):
         self.godchild2.refresh_from_db()
         self.assertEqual(self.godchild2.godparent, self.member.godparent)
         self.assertGet(reverse('jgo:manage-matched'))
-        self.assertGet(reverse('jgo:manage-matched'), member=self.member2, code=302)
+        self.assertGet(reverse('jgo:manage-matched'), member=self.member2, code=403)
         # test views of godchild and godparent
         self.assertGet(reverse('jgo:godchild'), member=self.member3)
         self.assertGet(reverse('jgo:godparent'))

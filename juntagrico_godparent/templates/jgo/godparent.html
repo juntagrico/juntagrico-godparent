@@ -38,8 +38,8 @@
                             <strong>{{ godchild }}</strong>:
                             <a href="mailto:{{ godchild.member.email }}">{{ godchild.member.email }}</a>,
                             {{ godchild.member.mobile_phone|default:godchild.member.phone }}<br>
-                            {% trans "Gemeinsame Sprachen:" %} {{ godchild.matching_languages|default:'Keine' }}<br>
-                            {% trans "Gemeinsame Zeitfenster:" %} {{ godchild.matching_slots|default:'Keine' }}<br>
+                            {% trans "Gemeinsame Sprachen:" %} {{ godchild.get_matching_languages_display }}<br>
+                            {% trans "Gemeinsame Zeitfenster:" %} {{ godchild.get_matching_slots_display }}<br>
                             {% trans "Gemeinsame Tätigkeitsbereiche:" %}
                             {% for area in godchild.matching_areas %}
                                 {{ area.name }}{% if not forloop.last %},{% endif %}

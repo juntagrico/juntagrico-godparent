@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.forms import ModelForm, Form, BooleanField, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
@@ -8,6 +9,8 @@ from crispy_forms.layout import Submit
 
 from juntagrico.config import Config
 from juntagrico.dao.activityareadao import ActivityAreaDao
+from juntagrico.entity.member import Member
+from juntagrico.forms.email import MemberForm
 
 from juntagrico_godparent.models import Godparent, Godchild
 from juntagrico_godparent.util.customize import customizable
@@ -67,3 +70,12 @@ class GodchildForm(RegisterForm, ModelForm):
     class Meta:
         model = Godchild
         fields = ('languages', 'slots', 'children', 'talents', 'areas', 'comments')
+
+
+class ContactForm(MemberForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'to_members' in self.fields:
+            self.fields['to_members'].queryset = Member.objects.active().filter(
+                Q(godparent__isnull=False) | Q(godchild__isnull=False)
+            ).distinct()

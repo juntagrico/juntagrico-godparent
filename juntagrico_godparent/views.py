@@ -1,9 +1,16 @@
+from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
-from juntagrico.util.views_admin import subscription_management_list
+from django.urls import reverse_lazy
+from django.views.generic import ListView
+from juntagrico.entity.member import Member
 from juntagrico.view_decorators import highlighted_menu
+from juntagrico.views.email import email_view
 
-from juntagrico_godparent.forms import GodparentForm, GodchildForm
+from juntagrico_godparent.forms import GodparentForm, GodchildForm, ContactForm
 
 from juntagrico_godparent.models import Godchild, Godparent
 from juntagrico_godparent import signals
@@ -121,14 +128,25 @@ def done(request, godchild_id):
     return redirect('jgo:home')
 
 
-@permission_required('juntagrico_godparent.can_make_matches')
-def match(request):
-    render_dict = {
-        'change_date_disabled': True,
-        'available_godparents': Godparent.objects.available(),
-        'remaining_godchildren': Godchild.objects.matched(False).count()
-    }
-    if request.method == 'POST':
+class GodparentListView(PermissionRequiredMixin, ListView):
+    permission_required = ['juntagrico_godparent.can_make_matches']
+    extra_context = {'mail_url': reverse_lazy('jgo:contact')}
+
+
+class MatchView(GodparentListView):
+    template_name = 'jgo/manage/match_maker.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['available_godparents'] = Godparent.objects.available()
+        context['remaining_godchildren'] = Godchild.objects.matched(False).count()
+        return context
+
+    def get_queryset(self):
+        return all_possible_matches
+
+    def post(self, request, *args, **kwargs):
+        success = False
         for name, value in request.POST.items():
             if name.startswith('match-') and value == 'on':
                 godparent, godchild = name.split('-')[1:]
@@ -136,29 +154,37 @@ def match(request):
                 godchild.godparent_id = godparent
                 godchild.save()
                 signals.matched.send(godchild.__class__, godchild=godchild, matcher=request.user.member)
-                render_dict['form_result'] = 'success'
-    return subscription_management_list(all_possible_matches(), render_dict,
-                                        'jgo/manage/match_maker.html', request)
+                success = True
+        if success:
+            messages.success(request, 'Neumitglied und Gotte/Götti wurden vermittelt.')
+        else:
+            messages.error(request, 'Wähle mindestens eine passende Kombination aus')
+        return redirect('jgo:manage-match')
 
 
-@permission_required('juntagrico_godparent.can_make_matches')
-def unmatchable(request):
-    render_dict = {'change_date_disabled': True}
-    if request.method == 'POST' and request.POST.get('godparent') and request.POST.get('godchild'):
-        godchild = get_object_or_404(Godchild, id=request.POST.get('godchild'))
-        godchild.godparent_id = request.POST.get('godparent')
-        godchild.save()
-        signals.matched.send(godchild.__class__, godchild=godchild, matcher=request.user.member)
-        render_dict['form_result'] = 'success'
-    return subscription_management_list(all_unmatchable(), render_dict,
-                                        'jgo/manage/unmatchable.html', request)
+class UnmatchableView(GodparentListView):
+    template_name = 'jgo/manage/unmatchable.html'
+
+    def get_queryset(self):
+        return all_unmatchable
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('godparent') and request.POST.get('godchild'):
+            godchild = get_object_or_404(Godchild, id=request.POST.get('godchild'))
+            godchild.godparent_id = request.POST.get('godparent')
+            godchild.save()
+            signals.matched.send(godchild.__class__, godchild=godchild, matcher=request.user.member)
+            messages.success(request, 'Neumitglied und Gotte/Götti wurden vermittelt.')
+        else:
+            messages.error(request, 'Wähle ein Gotte/Götti und ein Neumitglied aus.')
+        return redirect('jgo:manage-unmatchable')
 
 
-@permission_required('juntagrico_godparent.can_make_matches')
-def matched(request, removed=False):
-    render_dict = {'change_date_disabled': True, 'removed': removed}
-    return subscription_management_list(get_matched(), render_dict,
-                                        'jgo/manage/matched.html', request)
+class MatchedView(GodparentListView):
+    template_name = 'jgo/manage/matched.html'
+
+    def get_queryset(self):
+        return get_matched
 
 
 @permission_required('juntagrico_godparent.can_make_matches')
@@ -166,11 +192,31 @@ def unmatch(request, godchild_id):
     godchild = get_object_or_404(Godchild, id=godchild_id)
     godchild.godparent = None
     godchild.save()
-    return redirect('jgo:manage-matched-removed')
+    messages.success(request, 'Neumitglied und Gotte/Götti wurden wieder getrennt.')
+    return redirect('jgo:manage-matched')
+
+
+class CompletedView(GodparentListView):
+    template_name = 'jgo/manage/completed.html'
+    queryset = Godchild.objects.completed
 
 
 @permission_required('juntagrico_godparent.can_make_matches')
-def completed(request):
-    render_dict = {'change_date_disabled': True}
-    return subscription_management_list(Godchild.objects.completed(), render_dict,
-                                        'jgo/manage/completed.html', request)
+def contact_member(request, member_id):
+    member = get_object_or_404(Member, id=member_id)
+    if not is_godparent(member) and not hasattr(member, 'godchild'):
+        raise PermissionDenied
+    return email_view(request, ContactForm, {
+        'to_members': [member_id]
+    })
+
+
+@permission_required('juntagrico_godparent.can_make_matches')
+def contact_members(request):
+    member_ids = request.GET.get('members', '').split('-')
+    members = Member.objects.filter(Q(godparent__isnull=False) | Q(godchild__isnull=False), id__in=member_ids)
+    if not members:
+        raise PermissionDenied
+    return email_view(request, ContactForm, {
+        'to_members': members.values_list('id', flat=True),
+    })
